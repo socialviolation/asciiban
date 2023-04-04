@@ -1,7 +1,12 @@
 package asciiban
 
 type ColourProfile struct {
+	// List of Hex Codes to use in scheme
 	Palette []string
+}
+
+func (c *ColourProfile) isEmpty() bool {
+	return c.Palette == nil
 }
 
 // https://colorhunt.co/palettes/neon
@@ -13,14 +18,23 @@ var (
 	SwampGreen   = ColourProfile{Palette: []string{"DDFFBB", "DDFFBB", "C7E9B0", "C7E9B0", "B3C99C", "B3C99C"}}
 	BogGreen     = ColourProfile{Palette: []string{"7DCE13", "7DCE13", "70b911", "70b911", "64a40f", "64a40f"}}
 	MatrixGreen  = ColourProfile{Palette: []string{"00FF41", "00FF41", "00cc34", "00cc34", "009927", "009927"}}
+	Default      = ColourProfile{Palette: []string{"FFFFFF"}}
 )
 
 var Profiles = map[string]ColourProfile{
-	"mint":   MintGreen,
-	"matrix": MatrixGreen,
-	"bog":    BogGreen,
-	"swamp":  SwampGreen,
-	"ice":    IceBlue,
-	"desert": Desert,
-	"retro":  RetroIcyPole,
+	"mint":    MintGreen,
+	"matrix":  MatrixGreen,
+	"bog":     BogGreen,
+	"swamp":   SwampGreen,
+	"ice":     IceBlue,
+	"desert":  Desert,
+	"retro":   RetroIcyPole,
+	"default": Default,
+}
+
+func GetProfile(p string) ColourProfile {
+	if val, ok := Profiles[p]; ok {
+		return val
+	}
+	return Default
 }
