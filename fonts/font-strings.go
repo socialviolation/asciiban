@@ -1,5 +1,9 @@
+//go:build !fonts
+// +build !fonts
+
 package fonts
 
+//go:generate go run gen.go
 const ANSIShadow = `
 flf2a$ 7 7 13 0 7 0 64 0
 Font Author: ?

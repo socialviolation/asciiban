@@ -1,5 +1,5 @@
 build:
-	go build -o asciiban cmd/main.go
+	go build -o bin/asciiban cmd/main.go
 	./asciiban print -m "asciiban"
 
 fonts:
