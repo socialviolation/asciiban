@@ -3,6 +3,7 @@ package cli
 import (
 	"github.com/socialviolation/asciiban"
 	"github.com/socialviolation/asciiban/cprofiles"
+	"github.com/socialviolation/asciiban/fonts"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -10,6 +11,7 @@ import (
 
 var fillBg bool
 var palette string
+var font string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -20,6 +22,7 @@ var rootCmd = &cobra.Command{
 		if len(args) != 0 {
 			a.Message = args[0]
 		}
+		a.Font = fonts.Get(font)
 		a.FillBg = fillBg
 		a.Profile = cprofiles.Get(palette)
 		asciiban.Print(a)
@@ -36,6 +39,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolVarP(&fillBg, "fill-bg", "f", false, "Fill whitespace characters (doesn't look great in all fonts)")
+	rootCmd.PersistentFlags().BoolVarP(&fillBg, "background", "b", false, "Fill whitespace characters (doesn't look great in all fonts)")
 	rootCmd.PersistentFlags().StringVarP(&palette, "palette", "p", "default", "Colour palette to use")
+	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 }
