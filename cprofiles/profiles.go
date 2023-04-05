@@ -1,11 +1,11 @@
-package asciiban
+package cprofiles
 
 type ColourProfile struct {
 	// List of Hex Codes to use in scheme
 	Palette []string
 }
 
-func (c *ColourProfile) isEmpty() bool {
+func (c *ColourProfile) IsEmpty() bool {
 	return c.Palette == nil
 }
 
@@ -21,7 +21,7 @@ var (
 	Default      = ColourProfile{Palette: []string{"FFFFFF"}}
 )
 
-var Profiles = map[string]ColourProfile{
+var ProfileMap = map[string]ColourProfile{
 	"mint":    MintGreen,
 	"matrix":  MatrixGreen,
 	"bog":     BogGreen,
@@ -32,8 +32,8 @@ var Profiles = map[string]ColourProfile{
 	"default": Default,
 }
 
-func GetProfile(p string) ColourProfile {
-	if val, ok := Profiles[p]; ok {
+func Get(p string) ColourProfile {
+	if val, ok := ProfileMap[p]; ok {
 		return val
 	}
 	return Default

@@ -1,9 +1,8 @@
 package asciiban
 
 import (
-	"fmt"
+	"github.com/socialviolation/asciiban/cprofiles"
 	"github.com/socialviolation/asciiban/fonts"
-	"path"
 	"strings"
 
 	"github.com/common-nighthawk/go-figure"
@@ -12,30 +11,17 @@ import (
 
 const backgroundChar = "░"
 
-func GetFonts() {
-	for _, font := range figure.AssetNames() {
-
-		fr := path.Base(font)
-		fr = strings.Split(fr, ".")[0]
-
-		fmt.Println()
-		fmt.Println(fr)
-		myFigure := figure.NewFigure("asciiban", fr, false)
-		myFigure.Print()
-	}
-}
-
 type Args struct {
 	Message string
 	Font    string
-	Profile ColourProfile
+	Profile cprofiles.ColourProfile
 	FillBg  bool
 }
 
 var DefaultArgs Args = Args{
 	Message: "asciiban",
 	Font:    fonts.ANSIShadow,
-	Profile: Default,
+	Profile: cprofiles.Default,
 	FillBg:  false,
 }
 
@@ -43,8 +29,8 @@ func Print(args Args) {
 	if args.Font == "" {
 		args.Font = fonts.ANSIShadow
 	}
-	if args.Profile.isEmpty() {
-		args.Profile = Default
+	if args.Profile.IsEmpty() {
+		args.Profile = cprofiles.Default
 	}
 
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), true).String()

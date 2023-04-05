@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/socialviolation/asciiban"
+	"github.com/socialviolation/asciiban/cprofiles"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +18,7 @@ var printCmd = &cobra.Command{
 		a := asciiban.DefaultArgs
 		a.Message = message
 		a.FillBg = fillBg
-		a.Profile = asciiban.GetProfile(palette)
+		a.Profile = cprofiles.Get(palette)
 		asciiban.Print(a)
 	},
 }
