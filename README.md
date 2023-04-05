@@ -1,5 +1,3 @@
-# asciiban
-
 ```text
  █████╗ ███████╗ ██████╗██╗██╗██████╗  █████╗ ███╗   ██╗
 ██╔══██╗██╔════╝██╔════╝██║██║██╔══██╗██╔══██╗████╗  ██║
@@ -17,7 +15,7 @@ a fun and creative way to make your command-line prompts stand out.
 You can install asciiban by running the following command:
 
 ```bash
-go install github.com/social-violation/asciiban
+go install github.com/social-violation/asciiban/cmd
 ```
 
 This will install the tool in your $GOBIN directory.
@@ -49,4 +47,4 @@ If you find any bugs or have suggestions for improvements, please feel free to o
 the GitHub repository: https://github.com/social-violation/asciiban
 
 ## License
-This tool is released under the MIT License. See the LICENSE file for details.
+This tool is released under the GPL-3.0 License. See the LICENSE file for details.
