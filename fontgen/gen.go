@@ -12,6 +12,7 @@ import (
 	"strings"
 	"text/template"
 	"time"
+	"unicode/utf8"
 )
 
 func contains(s []string, e string) bool {
@@ -69,6 +70,9 @@ func main() {
 
 		fName = strings.Title(fName)
 		b, _ := os.ReadFile(dir + "/" + file.Name())
+		if !utf8.Valid(b) {
+			continue
+		}
 		fc := string(b)
 		fc = strings.ReplaceAll(fc, "`", "` + \"`\" + `")
 		fontMap[fName] = fc
@@ -115,7 +119,7 @@ func Get(f string) string {
 	return ANSIShadow
 }
 
-var FontMap = map[string]ColourProfile{
+var FontMap = map[string]string{
 {{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": {{ $key }},
 {{end }}}
 
