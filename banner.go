@@ -11,13 +11,10 @@ import (
 	"strings"
 )
 
-const backgroundChar = "░"
-
 type Args struct {
 	Message    string
 	Font       string
 	Palette    palettes.Palette
-	FillBg     bool
 	ColourMode palettes.ColourMode
 }
 
@@ -61,18 +58,11 @@ func Print(args Args) {
 
 func printSingleColour(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	if args.FillBg {
-		raw = strings.Replace(raw, " ", backgroundChar, -1)
-	}
 	color.HEX(args.Palette.Colours[0]).Println(raw)
 }
 
 func printAlternatingColours(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	if args.FillBg {
-		raw = strings.Replace(raw, " ", backgroundChar, -1)
-	}
-
 	raw = strings.TrimSuffix(raw, " ")
 	lines := strings.Split(raw, "\n")
 	for i, l := range lines {
@@ -93,10 +83,6 @@ func printAlternatingColours(args Args) {
 
 func printVerticalGradient(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	if args.FillBg {
-		raw = strings.Replace(raw, " ", backgroundChar, -1)
-	}
-
 	raw = strings.TrimSuffix(raw, " ")
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
@@ -111,9 +97,6 @@ func printVerticalGradient(args Args) {
 
 func printHorizontalGradient(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	if args.FillBg {
-		raw = strings.Replace(raw, " ", backgroundChar, -1)
-	}
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for _, l := range lines {

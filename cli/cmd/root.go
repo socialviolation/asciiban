@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var fillBg bool
 var palette string
 var font string
 var mode string
@@ -35,7 +34,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolVarP(&fillBg, "background", "b", false, "Fill whitespace characters (doesn't look great in all fonts)")
 	rootCmd.PersistentFlags().StringVarP(&palette, "palette", "p", "default", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "", "Palette Colour Mode (simple | alternating | vertical | horizontal)")
@@ -47,7 +45,6 @@ func getArgs(args []string) asciiban.Args {
 		a.Message = args[0]
 	}
 	a.Font = fonts.Get(font)
-	a.FillBg = fillBg
 	a.Palette = palettes.Get(palette)
 	a.ColourMode = palettes.GetMode(mode)
 
