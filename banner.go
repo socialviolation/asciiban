@@ -1,10 +1,11 @@
+//go:generate go run fontgen/gen.go
 package asciiban
 
 import (
 	"fmt"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gookit/color"
-	"github.com/socialviolation/asciiban/fonts"
+	"github.com/socialviolation/asciiban/fontpack"
 	"github.com/socialviolation/asciiban/palettes"
 	"log"
 	"math"
@@ -20,13 +21,13 @@ type Args struct {
 
 var DefaultArgs Args = Args{
 	Message: "asciiban",
-	Font:    fonts.ANSIShadow,
+	Font:    fontpack.ANSIShadow,
 	Palette: palettes.White,
 }
 
 func Print(args Args) {
 	if args.Font == "" {
-		args.Font = fonts.ANSIShadow
+		args.Font = fontpack.ANSIShadow
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = palettes.White
