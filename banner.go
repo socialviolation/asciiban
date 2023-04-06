@@ -1,30 +1,30 @@
 package asciiban
 
 import (
+	"fmt"
+	"github.com/common-nighthawk/go-figure"
+	"github.com/gookit/color"
 	"github.com/socialviolation/asciiban/fonts"
 	"github.com/socialviolation/asciiban/palettes"
 	"log"
 	"math"
 	"strings"
-
-	"github.com/common-nighthawk/go-figure"
-	"github.com/gookit/color"
 )
 
 const backgroundChar = "░"
 
 type Args struct {
-	Message string
-	Font    string
-	Palette palettes.Palette
-	FillBg  bool
+	Message    string
+	Font       string
+	Palette    palettes.Palette
+	FillBg     bool
+	ColourMode palettes.ColourMode
 }
 
 var DefaultArgs Args = Args{
 	Message: "asciiban",
 	Font:    fonts.ANSIShadow,
 	Palette: palettes.White,
-	FillBg:  false,
 }
 
 func Print(args Args) {
@@ -34,13 +34,64 @@ func Print(args Args) {
 	if args.Palette.IsEmpty() {
 		args.Palette = palettes.White
 	}
+	if args.ColourMode != palettes.Nil {
+		args.Palette.ColourMode = args.ColourMode
+	}
 
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("panic occurred:", err)
 		}
 	}()
+	switch args.Palette.ColourMode {
+	case palettes.Single:
+		printSingleColour(args)
+		return
+	case palettes.Alternate:
+		printAlternatingColours(args)
+		return
+	case palettes.VerticalGradient:
+		printVerticalGradient(args)
+		return
+	case palettes.HorizontalGradient:
+		printHorizontalGradient(args)
+		return
+	}
+}
 
+func printSingleColour(args Args) {
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	if args.FillBg {
+		raw = strings.Replace(raw, " ", backgroundChar, -1)
+	}
+	color.HEX(args.Palette.Colours[0]).Println(raw)
+}
+
+func printAlternatingColours(args Args) {
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	if args.FillBg {
+		raw = strings.Replace(raw, " ", backgroundChar, -1)
+	}
+
+	raw = strings.TrimSuffix(raw, " ")
+	lines := strings.Split(raw, "\n")
+	for i, l := range lines {
+		if i == len(lines)-1 {
+		}
+
+		if strings.Trim(l, " ") == "" {
+			continue
+		}
+
+		n := i % 2
+		if n >= len(args.Palette.Colours) {
+			n = 0
+		}
+		color.HEX(args.Palette.Colours[n]).Println(l)
+	}
+}
+
+func printVerticalGradient(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
 	if args.FillBg {
 		raw = strings.Replace(raw, " ", backgroundChar, -1)
@@ -50,14 +101,31 @@ func Print(args Args) {
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for i, l := range lines {
-		if i == len(lines)-1 {
-		}
-
 		if strings.Trim(l, " ") == "" {
 			continue
 		}
 		ind := translateLERP(len(lines), palLen, i)
 		color.HEX(args.Palette.Colours[ind]).Println(l)
+	}
+}
+
+func printHorizontalGradient(args Args) {
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	if args.FillBg {
+		raw = strings.Replace(raw, " ", backgroundChar, -1)
+	}
+	lines := strings.Split(raw, "\n")
+	palLen := len(args.Palette.Colours)
+	for _, l := range lines {
+		if strings.Trim(l, " ") == "" {
+			continue
+		}
+
+		lineChunks := chunkSlice(l, palLen)
+		for c := 0; c < len(lineChunks); c++ {
+			color.HEX(args.Palette.Colours[c]).Print(lineChunks[c])
+		}
+		fmt.Println()
 	}
 }
 
@@ -73,4 +141,18 @@ func translateLERP(lines int, colours int, lineIndex int) int {
 func lerp(x int, y int, f float64) int {
 	i := float64(x) + f*(float64(y)-float64(x))
 	return int(math.Round(i))
+}
+
+func chunkSlice(slice string, numChunks int) []string {
+	var result []string
+
+	for i := 0; i < numChunks; i++ {
+
+		min := i * len(slice) / numChunks
+		max := ((i + 1) * len(slice)) / numChunks
+
+		result = append(result, slice[min:max])
+	}
+	return result
+
 }

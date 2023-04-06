@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"github.com/socialviolation/asciiban"
-	"github.com/socialviolation/asciiban/fonts"
 	"github.com/socialviolation/asciiban/palettes"
 
 	"github.com/spf13/cobra"
@@ -31,14 +30,9 @@ var palettesTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available colour palettes",
 	Run: func(cmd *cobra.Command, args []string) {
+		a := getArgs(args)
 		for p, _ := range palettes.ProfileMap {
 			fmt.Println(p)
-			a := asciiban.DefaultArgs
-			if len(args) > 0 {
-				a.Message = args[0]
-			}
-			a.Font = fonts.Get(font)
-			a.FillBg = fillBg
 			a.Palette = palettes.Get(p)
 			asciiban.Print(a)
 			fmt.Println()
