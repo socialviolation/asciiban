@@ -1,6 +1,5 @@
-// The following directive is necessary to make the package coherent:
-
 //go:generate go run gen.go
+//go:build exclude
 
 package main
 
@@ -131,7 +130,3 @@ var FontMap = map[string]string{
 const {{ $key }} = ` + "`{{ $value }}`" + `
 {{ end }}
 `
-
-const fontTemplate = "const {{.Name}} = \n`{{.Contents}}`\n"
-
-const allFontsTemplate = "const AllFonts = []string{ {{.FontList}} }"

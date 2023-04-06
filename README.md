@@ -18,7 +18,7 @@ You can install asciiban by running the following command:
 go install github.com/social-violation/asciiban/cmd
 ```
 
-This will install the tool in your $GOBIN directory.
+This will install the tool in your `$GOBIN` directory.
 
 ## Usage
 
@@ -31,11 +31,12 @@ asciiban "Your text here"
 This will generate an ASCII art banner for the text you entered. You can customize the banner by using the following
 flags:
 
--f or --font: Specify the font to use for the banner. The default font is standard. Available fonts are standard, big,
-block, bubble, digital, ivrit, lean, mini, mnemonic, script, and shadow.
--c or --color: Specify the color of the banner. The default color is white. Available colors are black, red, green,
-yellow, blue, purple, cyan, and white.
-For example, to generate an ASCII art banner using the big font and green color, run the following command:
+* --font (-f): Specify the font to use for the banner. The ANSIShadow font is the default.
+  * Available fonts can be found by running `asciiban list fonts`
+* --palette (-p): Specify the colour palette to use.
+  * Available fonts can be found by running `asciiban list palettes`
+
+* For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
 asciiban -f big -c green "Your text here"

@@ -1,6 +1,5 @@
-build:
-	go build -o bin/asciiban cmd/main.go
-	asciiban "test message" -p retro
+BINARY="bin/asciiban"
 
-fonts:
-	git clone git@github.com:xero/figlet-fonts.git
+build:
+	go build -o $(BINARY) cli/main.go
+	$(BINARY) "test message" -p retro

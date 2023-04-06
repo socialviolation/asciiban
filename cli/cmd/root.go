@@ -1,9 +1,9 @@
-package cli
+package cmd
 
 import (
 	"github.com/socialviolation/asciiban"
-	"github.com/socialviolation/asciiban/cprofiles"
 	"github.com/socialviolation/asciiban/fonts"
+	"github.com/socialviolation/asciiban/palettes"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,14 +17,13 @@ var font string
 var rootCmd = &cobra.Command{
 	Use:   "asciiban",
 	Short: "Generate ascii banners",
+	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		a := asciiban.DefaultArgs
-		if len(args) != 0 {
-			a.Message = args[0]
-		}
+		a.Message = args[0]
 		a.Font = fonts.Get(font)
 		a.FillBg = fillBg
-		a.Profile = cprofiles.Get(palette)
+		a.Profile = palettes.Get(palette)
 		asciiban.Print(a)
 	},
 }
