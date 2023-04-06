@@ -1,25 +1,82 @@
 package palettes
 
+type ColourMode int64
+
+const (
+	VerticalGradient ColourMode = iota
+	HorizontalGradient
+	Single
+	Alternate
+)
+
 type Palette struct {
 	// List of Hex Codes to use in scheme
-	Palette []string
+	Colours    []string
+	RenderType ColourMode
 }
 
 func (c *Palette) IsEmpty() bool {
-	return c.Palette == nil
+	return c.Colours == nil
 }
 
 // https://colorhunt.co/palettes/neon
 var (
-	MintGreen    = Palette{Palette: []string{"CCFFBD", "CCFFBD", "7ECA9C", "7ECA9C", "4b795d", "4b795d"}}
-	RetroIcyPole = Palette{Palette: []string{"F38181", "F38181", "FCE38A", "FCE38A", "EAFFD0", "95E1D3"}}
-	Desert       = Palette{Palette: []string{"FFACAC", "FFBFA9", "FFBFA9", "FFEBB4", "FFEBB4", "FBFFB1"}}
-	IceBlue      = Palette{Palette: []string{"E3FDFD", "E3FDFD", "CBF1F5", "A6E3E9", "A6E3E9", "71C9CE"}}
-	SwampGreen   = Palette{Palette: []string{"DDFFBB", "DDFFBB", "C7E9B0", "C7E9B0", "B3C99C", "B3C99C"}}
-	BogGreen     = Palette{Palette: []string{"7DCE13", "7DCE13", "70b911", "70b911", "64a40f", "64a40f"}}
-	MatrixGreen  = Palette{Palette: []string{"00FF41", "00FF41", "00cc34", "00cc34", "009927", "009927"}}
-	Google       = Palette{Palette: []string{"4285F4", "4285F4", "DB4437", "F4B400", "0F9D58"}}
-	Default      = Palette{Palette: []string{"FFFFFF"}}
+	MintGreen = Palette{
+		Colours:    []string{"CCFFBD", "7ECA9C", "4b795d"},
+		RenderType: VerticalGradient,
+	}
+	RetroIcyPole = Palette{
+		Colours:    []string{"F38181", "FCE38A", "EAFFD0", "95E1D3"},
+		RenderType: VerticalGradient,
+	}
+	Desert = Palette{
+		Colours:    []string{"FFACAC", "FFBFA9", "FFEBB4", "FBFFB1"},
+		RenderType: VerticalGradient,
+	}
+	IceBlue = Palette{
+		Colours:    []string{"E3FDFD", "CBF1F5", "A6E3E9", "71C9CE"},
+		RenderType: VerticalGradient,
+	}
+	SwampGreen = Palette{
+		Colours:    []string{"DDFFBB", "C7E9B0", "B3C99C"},
+		RenderType: VerticalGradient,
+	}
+	BogGreen = Palette{
+		Colours:    []string{"7DCE13", "70b911", "64a40f"},
+		RenderType: VerticalGradient,
+	}
+	MatrixGreen = Palette{
+		Colours:    []string{"00FF41", "00cc34", "009927"},
+		RenderType: VerticalGradient,
+	}
+	Google = Palette{
+		Colours:    []string{"4285F4", "DB4437", "F4B400", "0F9D58"},
+		RenderType: VerticalGradient,
+	}
+	White = Palette{
+		Colours:    []string{"FFFFFF"},
+		RenderType: Single,
+	}
+	Red = Palette{
+		Colours:    []string{"ff0000"},
+		RenderType: Single,
+	}
+	Green = Palette{
+		Colours:    []string{"008000"},
+		RenderType: Single,
+	}
+	Blue = Palette{
+		Colours:    []string{"0000ff"},
+		RenderType: Single,
+	}
+	Yellow = Palette{
+		Colours:    []string{"ffff00"},
+		RenderType: Single,
+	}
+	Purple = Palette{
+		Colours:    []string{"A020F0"},
+		RenderType: Single,
+	}
 )
 
 var ProfileMap = map[string]Palette{
@@ -31,12 +88,17 @@ var ProfileMap = map[string]Palette{
 	"desert":  Desert,
 	"retro":   RetroIcyPole,
 	"google":  Google,
-	"default": Default,
+	"default": White,
+	"red":     Red,
+	"green":   Green,
+	"blue":    Blue,
+	"yellow":  Yellow,
+	"purple":  Purple,
 }
 
 func Get(p string) Palette {
 	if val, ok := ProfileMap[p]; ok {
 		return val
 	}
-	return Default
+	return White
 }

@@ -39,7 +39,7 @@ var palettesTestCmd = &cobra.Command{
 			}
 			a.Font = fonts.Get(font)
 			a.FillBg = fillBg
-			a.Profile = palettes.Get(p)
+			a.Palette = palettes.Get(p)
 			asciiban.Print(a)
 			fmt.Println()
 		}

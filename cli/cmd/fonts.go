@@ -5,6 +5,7 @@ import (
 	"github.com/socialviolation/asciiban"
 	"github.com/socialviolation/asciiban/fonts"
 	"github.com/socialviolation/asciiban/palettes"
+	"sort"
 
 	"github.com/spf13/cobra"
 )
@@ -31,15 +32,23 @@ var fontsTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
-		for f, _ := range fonts.FontMap {
-			fmt.Println(f)
+
+		keys := make([]string, 0, len(fonts.FontMap))
+
+		for k := range fonts.FontMap {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+
+		for _, k := range keys {
+			fmt.Println(k)
 			a := asciiban.DefaultArgs
 			if len(args) > 0 {
 				a.Message = args[0]
 			}
-			a.Font = fonts.Get(f)
+			a.Font = fonts.Get(k)
 			a.FillBg = fillBg
-			a.Profile = palettes.Get(palette)
+			a.Palette = palettes.Get(palette)
 			asciiban.Print(a)
 			fmt.Println()
 		}

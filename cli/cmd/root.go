@@ -23,7 +23,7 @@ var rootCmd = &cobra.Command{
 		a.Message = args[0]
 		a.Font = fonts.Get(font)
 		a.FillBg = fillBg
-		a.Profile = palettes.Get(palette)
+		a.Palette = palettes.Get(palette)
 		asciiban.Print(a)
 	},
 }
