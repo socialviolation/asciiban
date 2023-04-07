@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/socialviolation/asciiban"
+	"github.com/socialviolation/asciiban/fontpack"
 	"github.com/socialviolation/asciiban/palettes"
 	"os"
 
@@ -15,11 +16,22 @@ var mode string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "asciiban",
-	Short: "Generate ascii banners",
+	Short: "Generate ascii banner",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		a := getArgs(args)
 		asciiban.Print(a)
+	},
+}
+
+// rootCmd represents the base command when called without any subcommands
+var randomCmd = &cobra.Command{
+	Use:   "random",
+	Short: "Generate ascii banner using random font & colours",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		a := getArgs(args)
+		asciiban.Random(a)
 	},
 }
 
@@ -33,6 +45,7 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.AddCommand(randomCmd)
 	rootCmd.PersistentFlags().StringVarP(&palette, "palette", "p", "default", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "", "Palette Colour Mode (simple | alternating | vertical | horizontal)")
@@ -43,7 +56,7 @@ func getArgs(args []string) asciiban.Args {
 	if len(args) > 0 {
 		a.Message = args[0]
 	}
-	a.Font = fontspack.Get(font)
+	a.Font = fontpack.Get(font)
 	a.Palette = palettes.Get(palette)
 	a.ColourMode = palettes.GetMode(mode)
 

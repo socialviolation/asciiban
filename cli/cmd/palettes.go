@@ -11,7 +11,7 @@ import (
 // palettesCmd represents the palettes command
 var palettesCmd = &cobra.Command{
 	Use:   "palettes",
-	Short: "A brief description of your command",
+	Short: "Subcommands show info for available palettes",
 }
 
 // palettesListCmd represents the list command

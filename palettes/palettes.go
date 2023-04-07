@@ -86,6 +86,10 @@ var (
 		Colours:    []string{"ff0000", "FF5733"},
 		ColourMode: Alternate,
 	}
+	Pizza = Palette{
+		Colours:    []string{"008c45", "f4f5f0", "cd212a"},
+		ColourMode: HorizontalGradient,
+	}
 )
 
 var ProfileMap = map[string]Palette{
@@ -105,6 +109,7 @@ var ProfileMap = map[string]Palette{
 	"purple":     Purple,
 	"red-black":  RedBlack,
 	"red-orange": RedOrange,
+	"pizza":      Pizza,
 }
 
 func Get(p string) Palette {

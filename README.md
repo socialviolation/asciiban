@@ -28,18 +28,28 @@ To use asciiban, simply run the following command:
 asciiban "Your text here"
 ```
 
-This will generate an ASCII art banner for the text you entered. You can customize the banner by using the following
-flags:
+This will generate an ASCII art banner for the text you entered. More information can be found by running `asciiban --help`
 
-* --font (-f): Specify the font to use for the banner. The ANSIShadow font is the default.
-  * Available fonts can be found by running `asciiban list fonts`
-* --palette (-p): Specify the colour palette to use.
-  * Available fonts can be found by running `asciiban list palettes`
+```text
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  fonts       A brief description of your command
+  help        Help about any command
+  palettes    A brief description of your command
+  random      Generate Random ascii banner
+
+Flags:
+  -f, --font string      Colour palette to use (default "ansishadow")
+  -h, --help             help for asciiban
+  -m, --mode string      Palette Colour Mode (simple | alternating | vertical | horizontal)
+  -p, --palette string   Colour palette to use (default "default")
+
+```
 
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciiban -f big -c green "Your text here"
+asciiban -f georgia11 -p matrix "What is real?"
 ```
 
 ## Contributing

@@ -1,4 +1,4 @@
-//go:generate go run fontgen/gen.go
+//go:generate go run gen.go
 package asciiban
 
 import (
@@ -9,6 +9,7 @@ import (
 	"github.com/socialviolation/asciiban/palettes"
 	"log"
 	"math"
+	"math/rand"
 	"strings"
 )
 
@@ -57,6 +58,13 @@ func Print(args Args) {
 	}
 }
 
+func Random(args Args) {
+	args.Font = pick(fontpack.FontMap)
+	args.Palette = pick(palettes.ProfileMap)
+	args.ColourMode = palettes.Nil
+	Print(args)
+}
+
 func printSingleColour(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
 	color.HEX(args.Palette.Colours[0]).Println(raw)
@@ -64,16 +72,8 @@ func printSingleColour(args Args) {
 
 func printAlternatingColours(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	raw = strings.TrimSuffix(raw, " ")
 	lines := strings.Split(raw, "\n")
 	for i, l := range lines {
-		if i == len(lines)-1 {
-		}
-
-		if strings.Trim(l, " ") == "" {
-			continue
-		}
-
 		n := i % 2
 		if n >= len(args.Palette.Colours) {
 			n = 0
@@ -84,13 +84,9 @@ func printAlternatingColours(args Args) {
 
 func printVerticalGradient(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
-	raw = strings.TrimSuffix(raw, " ")
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for i, l := range lines {
-		if strings.Trim(l, " ") == "" {
-			continue
-		}
 		ind := translateLERP(len(lines), palLen, i)
 		color.HEX(args.Palette.Colours[ind]).Println(l)
 	}
@@ -101,10 +97,6 @@ func printHorizontalGradient(args Args) {
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for _, l := range lines {
-		if strings.Trim(l, " ") == "" {
-			continue
-		}
-
 		lineChunks := chunkSlice(l, palLen)
 		for c := 0; c < len(lineChunks); c++ {
 			color.HEX(args.Palette.Colours[c]).Print(lineChunks[c])
@@ -138,5 +130,16 @@ func chunkSlice(slice string, numChunks int) []string {
 		result = append(result, slice[min:max])
 	}
 	return result
+}
 
+func pick[K comparable, V any](m map[K]V) V {
+	k := rand.Intn(len(m))
+	i := 0
+	for _, x := range m {
+		if i == k {
+			return x
+		}
+		i++
+	}
+	panic("unreachable")
 }
