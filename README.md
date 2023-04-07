@@ -7,15 +7,42 @@
 ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝
 ```
 
-asciiban is a command-line interface (CLI) tool written in Go that generates ASCII art banners for a given prompt. It is
+asciiban is a go package or CLI tool that generates ASCII art banners for a given prompt. It is
 a fun and creative way to make your command-line prompts stand out.
 
+# SDK
+
+# Installation
+To Install, run the following tool.
+`go get -u github.com/socialviolation/asciiban@main`
+
+## Usage
+
+It can then be used in your code using the following example:
+```go
+package main
+
+import (
+	"github.com/socialviolation/asciiban"
+)
+
+func main() {
+    asciiban.Print(asciiban.Args{
+        Message: "What is real?",
+        Palette: palettes.MatrixGreen,
+        Font:    fontpack.Georgi16,
+    })
+}
+
+```
+
+# CLI
 ## Installation
 
 You can install asciiban by running the following command:
 
 ```bash
-go install github.com/social-violation/asciiban/cmd
+go install -o asciiban github.com/socialviolation/asciiban/cli@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
@@ -55,7 +82,7 @@ asciiban -f georgia11 -p matrix "What is real?"
 ## Contributing
 
 If you find any bugs or have suggestions for improvements, please feel free to open an issue or submit a pull request on
-the GitHub repository: https://github.com/social-violation/asciiban
+the GitHub repository: https://github.com/socialviolation/asciiban
 
 ## License
 This tool is released under the GPL-3.0 License. See the LICENSE file for details.
