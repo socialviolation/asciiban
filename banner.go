@@ -95,9 +95,13 @@ func printVerticalGradient(args Args) {
 func printHorizontalGradient(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
 	lines := strings.Split(raw, "\n")
-	palLen := len(args.Palette.Colours)
+	longest := getLongestString(lines)
+	chunkSize := (longest / len(args.Palette.Colours)) + 1
 	for _, l := range lines {
-		lineChunks := chunkSlice(l, palLen)
+		if l == "" {
+			continue
+		}
+		lineChunks := sliceIntoChunks(l, chunkSize)
 		for c := 0; c < len(lineChunks); c++ {
 			color.HEX(args.Palette.Colours[c]).Print(lineChunks[c])
 		}
@@ -142,4 +146,31 @@ func pick[K comparable, V any](m map[K]V) V {
 		i++
 	}
 	panic("unreachable")
+}
+
+func getLongestString(slice []string) int {
+	longest := 0
+	for _, s := range slice {
+		r := []rune(s)
+		if len(r) > longest {
+			longest = len(r)
+		}
+	}
+	return longest
+}
+
+func sliceIntoChunks(l string, chunkSize int) []string {
+	var result []string
+	runes := []rune(l)
+	for i := 0; i < len(runes); i += chunkSize {
+		end := i + chunkSize
+
+		if end > len(runes) {
+			end = len(runes)
+		}
+
+		result = append(result, string(runes[i:end]))
+	}
+
+	return result
 }
