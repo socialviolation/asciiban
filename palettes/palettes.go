@@ -90,6 +90,10 @@ var (
 		Colours:    []string{"008c45", "f4f5f0", "cd212a"},
 		ColourMode: HorizontalGradient,
 	}
+	Murica = Palette{
+		Colours:    []string{"BB133E", "FFFFFF", "004594"},
+		ColourMode: Alternate,
+	}
 )
 
 var ProfileMap = map[string]Palette{
@@ -110,6 +114,7 @@ var ProfileMap = map[string]Palette{
 	"red-black":  RedBlack,
 	"red-orange": RedOrange,
 	"pizza":      Pizza,
+	"murica":     Murica,
 }
 
 func Get(p string) Palette {

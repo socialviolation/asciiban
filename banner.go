@@ -1,3 +1,5 @@
+//go:build !exclude
+
 //go:generate go run gen.go
 package asciiban
 
@@ -74,7 +76,7 @@ func printAlternatingColours(args Args) {
 	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
 	lines := strings.Split(raw, "\n")
 	for i, l := range lines {
-		n := i % 2
+		n := i % len(args.Palette.Colours)
 		if n >= len(args.Palette.Colours) {
 			n = 0
 		}
