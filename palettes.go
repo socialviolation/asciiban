@@ -1,4 +1,4 @@
-package palettes
+package asciiban
 
 type ColourMode int64
 

@@ -8,6 +8,5 @@ BINARY := "asciiban"
 	just --list --unsorted
 
 build:
-	cd cli && go work sync
 	cd cli && go build -o {{BINDIR}}/{{BINARY}} main.go
 	{{BINARY}} "test message" -p retro

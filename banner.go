@@ -8,7 +8,6 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gookit/color"
 	"github.com/socialviolation/asciiban/fontpack"
-	"github.com/socialviolation/asciiban/palettes"
 	"log"
 	"math"
 	"math/rand"
@@ -18,14 +17,14 @@ import (
 type Args struct {
 	Message    string
 	Font       string
-	Palette    palettes.Palette
-	ColourMode palettes.ColourMode
+	Palette    Palette
+	ColourMode ColourMode
 }
 
 var DefaultArgs Args = Args{
 	Message: "asciiban",
 	Font:    fontpack.ANSIShadow,
-	Palette: palettes.White,
+	Palette: White,
 }
 
 func Print(args Args) {
@@ -33,9 +32,9 @@ func Print(args Args) {
 		args.Font = fontpack.ANSIShadow
 	}
 	if args.Palette.IsEmpty() {
-		args.Palette = palettes.White
+		args.Palette = White
 	}
-	if args.ColourMode != palettes.Nil {
+	if args.ColourMode != Nil {
 		args.Palette.ColourMode = args.ColourMode
 	}
 
@@ -45,16 +44,16 @@ func Print(args Args) {
 		}
 	}()
 	switch args.Palette.ColourMode {
-	case palettes.Single:
+	case Single:
 		printSingleColour(args)
 		return
-	case palettes.Alternate:
+	case Alternate:
 		printAlternatingColours(args)
 		return
-	case palettes.VerticalGradient:
+	case VerticalGradient:
 		printVerticalGradient(args)
 		return
-	case palettes.HorizontalGradient:
+	case HorizontalGradient:
 		printHorizontalGradient(args)
 		return
 	}
@@ -62,8 +61,8 @@ func Print(args Args) {
 
 func Random(args Args) {
 	args.Font = pick(fontpack.FontMap)
-	args.Palette = pick(palettes.ProfileMap)
-	args.ColourMode = palettes.Nil
+	args.Palette = pick(ProfileMap)
+	args.ColourMode = Nil
 	Print(args)
 }
 
