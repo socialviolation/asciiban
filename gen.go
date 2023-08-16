@@ -174,7 +174,7 @@ func compressFontFile(fontName string, srcFile string) (string, error) {
 	defer originalFile.Close()
 
 	// Create a new gzipped file
-	zipFile := PackageFont + "/" + strings.ToLower(fontName) + ".txt.gz"
+	zipFile := PackageFont + "/" + strings.ToLower(fontName) + ".flf.gz"
 	gzippedFile, err := os.Create(zipFile)
 	if err != nil {
 		return "", err
