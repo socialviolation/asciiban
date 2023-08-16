@@ -22,7 +22,7 @@ type Args struct {
 }
 
 var DefaultArgs Args = Args{
-	Message: "asciiban",
+	Message: "cli",
 	Font:    fontpack.ANSIShadow,
 	Palette: White,
 }
@@ -60,7 +60,7 @@ func Print(args Args) {
 }
 
 func Random(args Args) {
-	args.Font = pick(fontpack.FontMap)
+	args.Font = pick(FontMap)
 	args.Palette = pick(ProfileMap)
 	args.ColourMode = Nil
 	Print(args)

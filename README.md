@@ -29,7 +29,7 @@ import (
 func main() {
     asciiban.Print(asciiban.Args{
         Message: "What is real?",
-        Palette: palettes.MatrixGreen,
+        Palette: asciiban.MatrixGreen,
         Font:    fontpack.Georgi16,
     })
 }
@@ -42,7 +42,7 @@ func main() {
 You can install asciiban by running the following command:
 
 ```bash
-go install -o asciiban github.com/socialviolation/asciiban/cli@main
+go install github.com/socialviolation/cli/cli@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
@@ -52,7 +52,7 @@ This will install the tool in your `$GOBIN` directory.
 To use asciiban, simply run the following command:
 
 ```bash
-asciiban "Your text here"
+cli "Your text here"
 ```
 
 This will generate an ASCII art banner for the text you entered. More information can be found by running `asciiban --help`
@@ -76,7 +76,7 @@ Flags:
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciiban -f georgia11 -p matrix "What is real?"
+cli -f georgia11 -p matrix "What is real?"
 ```
 
 ## Contributing

@@ -2,7 +2,7 @@ set dotenv-load
 set fallback := false
 
 BINDIR := justfile_directory() + '/bin'
-BINARY := "asciiban"
+BINARY := "cli"
 
 @default:
 	just --list --unsorted

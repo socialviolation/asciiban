@@ -31,7 +31,7 @@ var palettesTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for p, _ := range asciiban.ProfileMap {
 			fmt.Println(p)
-			a.Palette = asciiban.Get(p)
+			a.Palette = asciiban.GetPalette(p)
 			asciiban.Print(a)
 			fmt.Println()
 		}

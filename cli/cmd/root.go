@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/socialviolation/asciiban"
-	"github.com/socialviolation/asciiban/fontpack"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -55,8 +54,8 @@ func getArgs(args []string) asciiban.Args {
 	if len(args) > 0 {
 		a.Message = args[0]
 	}
-	a.Font = fontpack.Get(font)
-	a.Palette = asciiban.Get(palette)
+	a.Font = asciiban.GetFont(font)
+	a.Palette = asciiban.GetPalette(palette)
 	a.ColourMode = asciiban.GetMode(mode)
 
 	return a

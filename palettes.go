@@ -1,3 +1,5 @@
+//go:build !exclude
+
 package asciiban
 
 type ColourMode int64
@@ -117,7 +119,7 @@ var ProfileMap = map[string]Palette{
 	"murica":     Murica,
 }
 
-func Get(p string) Palette {
+func GetPalette(p string) Palette {
 	if val, ok := ProfileMap[p]; ok {
 		return val
 	}

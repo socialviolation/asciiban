@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 	"text/template"
 	"time"
@@ -23,7 +24,11 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-const PackageFont = "fontpack"
+const (
+	PackageFont = "fontpack"
+	PackageMain = "asciiban"
+	DefaultFont = "FontANSIShadow"
+)
 
 func main() {
 	_ = os.RemoveAll(PackageFont)
@@ -83,21 +88,22 @@ func main() {
 		fontMap[fName] = fc
 	}
 
-	f, err := os.Create("fontpack/map.go")
+	fontMapFile, err := os.Create("fonts.go")
 	defer func(f *os.File) {
 		_ = f.Close()
-	}(f)
+	}(fontMapFile)
 
 	fontPack := template.Must(template.New("fontpack").Funcs(funcMap).Parse(fontPackTemplate))
-	e := fontPack.ExecuteTemplate(f, "fontpack", TemplateArgs{
-		Timestamp: time.Now(),
-		URL:       repoUrl,
-		FontMap:   fontMap,
-		Package:   PackageFont,
+	e := fontPack.ExecuteTemplate(fontMapFile, "fontpack", TemplateArgs{
+		Timestamp:   time.Now(),
+		URL:         repoUrl,
+		FontMap:     fontMap,
+		Package:     PackageMain,
+		DefaultFont: DefaultFont,
 	})
 
 	if e != nil {
-		fmt.Println("error rendering template: ", e)
+		fmt.Println("error rendering fonts.go template: ", e)
 		os.Exit(1)
 	}
 
@@ -123,13 +129,19 @@ func main() {
 		_ = fontFile.Close()
 	}
 
+	fmt.Println("Executing go fmt")
+	cmd := exec.Command("go", "fmt", "./...")
+	if err = cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 type TemplateArgs struct {
-	Timestamp time.Time
-	URL       string
-	FontMap   map[string]string
-	Package   string
+	Timestamp   time.Time
+	URL         string
+	FontMap     map[string]string
+	Package     string
+	DefaultFont string
 }
 
 type FontTemplateArgs struct {
@@ -151,17 +163,21 @@ package {{ .Package }}
 
 import (
 	"strings"
+	"github.com/socialviolation/{{ .Package }}/fontpack"
 )
 
-func Get(f string) string {
+{{ range $key, $value := .FontMap }}
+const Font{{ $key }} = fontpack.{{ $key }}{{end }}
+
+func GetFont(f string) string {
 	if val, ok := FontMap[strings.ToLower(f)]; ok {
 		return val
 	}
-	return ANSIShadow
+	return {{ .DefaultFont }}
 }
 
 var FontMap = map[string]string{
-{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": {{ $key }},
+{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": Font{{ $key }},
 {{end }}}
 `
 
