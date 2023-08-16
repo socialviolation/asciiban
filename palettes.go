@@ -123,7 +123,7 @@ func GetPalette(p string) Palette {
 	if val, ok := ProfileMap[p]; ok {
 		return val
 	}
-	return White
+	return GetPalette("default")
 }
 
 func GetMode(p string) ColourMode {
