@@ -5,7 +5,7 @@
 You can install asciiban cli by running the following command:
 
 ```bash
-go install github.com/socialviolation/asciiban/asciicli@main
+go install github.com/socialviolation/asciiban/asciicli-bkp@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
@@ -15,7 +15,7 @@ This will install the tool in your `$GOBIN` directory.
 To use asciiban cli, simply run the following command:
 
 ```bash
-asciicli "Your text here"
+asciicli-bkp "Your text here"
 ```
 
 This will generate an ASCII art banner for the text you entered. More information can be found by running `asciicli --help`
@@ -38,5 +38,5 @@ Flags:
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciicli -f georgia11 -p matrix "What is real?"
+asciicli-bkp -f georgia11 -p matrix "What is real?"
 ```

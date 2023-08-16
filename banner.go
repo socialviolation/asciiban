@@ -4,10 +4,12 @@
 package asciiban
 
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gookit/color"
-	"github.com/socialviolation/asciiban/fontpack"
+	"io"
 	"log"
 	"math"
 	"math/rand"
@@ -19,6 +21,8 @@ type Args struct {
 	Font       string
 	Palette    Palette
 	ColourMode ColourMode
+
+	fontContents string
 }
 
 var DefaultArgs Args = Args{
@@ -29,7 +33,7 @@ var DefaultArgs Args = Args{
 
 func Print(args Args) {
 	if args.Font == "" {
-		args.Font = fontpack.ANSIShadow
+		args.Font = DefaultFont
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
@@ -37,6 +41,12 @@ func Print(args Args) {
 	if args.ColourMode != Nil {
 		args.Palette.ColourMode = args.ColourMode
 	}
+
+	fc, err := readCompressedFont(args.Font)
+	if err != nil {
+		log.Fatal(err)
+	}
+	args.fontContents = fc
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -67,12 +77,12 @@ func Random(args Args) {
 }
 
 func printSingleColour(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
 	color.HEX(args.Palette.Colours[0]).Println(raw)
 }
 
 func printAlternatingColours(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
 	lines := strings.Split(raw, "\n")
 	for i, l := range lines {
 		n := i % len(args.Palette.Colours)
@@ -84,7 +94,7 @@ func printAlternatingColours(args Args) {
 }
 
 func printVerticalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for i, l := range lines {
@@ -94,7 +104,7 @@ func printVerticalGradient(args Args) {
 }
 
 func printHorizontalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.Font), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
 	lines := strings.Split(raw, "\n")
 	longest := getLongestString(lines)
 	chunkSize := (longest / len(args.Palette.Colours)) + 1
@@ -174,4 +184,20 @@ func sliceIntoChunks(l string, chunkSize int) []string {
 	}
 
 	return result
+}
+
+func readCompressedFont(filePath string) (string, error) {
+	reader := strings.NewReader(filePath)
+
+	// Create a new gzip reader
+	gzipReader, err := gzip.NewReader(reader)
+	defer gzipReader.Close()
+
+	buffer := bytes.NewBufferString("")
+	// Copy the contents of the gzip reader to the buffer string
+	_, err = io.Copy(buffer, gzipReader)
+	if err != nil {
+		return "", err
+	}
+	return buffer.String(), nil
 }
