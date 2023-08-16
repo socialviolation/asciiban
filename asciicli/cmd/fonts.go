@@ -17,7 +17,7 @@ var fontsCmd = &cobra.Command{
 // listCmd represents the list command
 var fontsListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all available fontpack",
+	Short: "List all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
 		for f, _ := range asciiban.FontMap {
 			fmt.Println(f)
@@ -28,7 +28,7 @@ var fontsListCmd = &cobra.Command{
 // listCmd represents the list command
 var fontsTestCmd = &cobra.Command{
 	Use:   "test",
-	Short: "Test all available fontpack",
+	Short: "Test all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
 		keys := make([]string, 0, len(asciiban.FontMap))
 

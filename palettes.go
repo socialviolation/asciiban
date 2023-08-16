@@ -98,6 +98,8 @@ var (
 	}
 )
 
+var DefaultPalette = White
+
 var ProfileMap = map[string]Palette{
 	"mint":       MintGreen,
 	"matrix":     MatrixGreen,
@@ -107,7 +109,7 @@ var ProfileMap = map[string]Palette{
 	"desert":     Desert,
 	"retro":      RetroIcyPole,
 	"google":     Google,
-	"default":    White,
+	"default":    DefaultPalette,
 	"red":        Red,
 	"green":      Green,
 	"blue":       Blue,
@@ -123,7 +125,7 @@ func GetPalette(p string) Palette {
 	if val, ok := ProfileMap[p]; ok {
 		return val
 	}
-	return GetPalette("default")
+	return DefaultPalette
 }
 
 func GetMode(p string) ColourMode {

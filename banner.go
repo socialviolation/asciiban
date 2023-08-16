@@ -22,9 +22,9 @@ type Args struct {
 }
 
 var DefaultArgs Args = Args{
-	Message: "asciicli",
-	Font:    fontpack.ANSIShadow,
-	Palette: White,
+	Message: "ascii banner",
+	Font:    DefaultFont,
+	Palette: DefaultPalette,
 }
 
 func Print(args Args) {

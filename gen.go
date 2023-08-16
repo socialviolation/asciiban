@@ -169,11 +169,13 @@ import (
 {{ range $key, $value := .FontMap }}
 const Font{{ $key }} = fontpack.{{ $key }}{{end }}
 
+const DefaultFont = Font{{ .DefaultFont }}
+
 func GetFont(f string) string {
 	if val, ok := FontMap[strings.ToLower(f)]; ok {
 		return val
 	}
-	return GetFont("default")
+	return Font{{ .DefaultFont }}
 }
 
 var FontMap = map[string]string{
