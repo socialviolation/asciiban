@@ -9,7 +9,7 @@ BINARY := "asciicli"
 
 build:
 	cd asciicli && go build -o {{BINDIR}}/{{BINARY}} main.go
-	{{BINARY}} "test message" -p retro
+	{{BINDIR}}/{{BINARY}} "test message" -p retro
 
 generate:
     go generate ./...

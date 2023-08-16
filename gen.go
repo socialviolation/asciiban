@@ -86,12 +86,6 @@ func main() {
 		if err != nil {
 			fmt.Println("error compressing font file: "+fName, err)
 		}
-		//b, _ := os.ReadFile(dir + "/" + file.Name())
-		//if !utf8.Valid(b) {
-		//	continue
-		//}
-		//fc := string(b)
-		//fc = strings.ReplaceAll(fc, "`", "` + \"`\" + `")
 
 		fontMap[fName] = zf
 		fmt.Println("Compressed font: " + fName + " to " + zf)
@@ -145,6 +139,7 @@ package {{ .Package }}
 
 import (
 	_ "embed"
+	"fmt"
 	"strings"
 )
 
@@ -153,19 +148,20 @@ import (
 var Font{{ $key }} string
 {{end}}
 
-var DefaultFont = Font{{ .DefaultFont }}
-
-func GetFont(f string) string {
-	if val, ok := FontMap[strings.ToLower(f)]; ok {
-		return val
-	}
-	return Font{{ .DefaultFont }}
-}
+var FontDefault = Font{{ .DefaultFont }}
 
 var FontMap = map[string]string{
 {{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": Font{{ $key }},
 {{end }}
 	"default": Font{{ .DefaultFont }},
+}
+
+func GetFont(f string) string {
+	if val, ok := FontMap[strings.ToLower(f)]; ok {
+		return val
+	}
+	fmt.Println("Font not found, using default font")
+	return GetFont("default")
 }
 `
 

@@ -27,18 +27,18 @@ type Args struct {
 
 var DefaultArgs Args = Args{
 	Message: "ascii banner",
-	Font:    DefaultFont,
-	Palette: DefaultPalette,
+	Font:    FontDefault,
+	Palette: PaletteDefault,
 }
 
 func Print(args Args) {
 	if args.Font == "" {
-		args.Font = DefaultFont
+		args.Font = FontDefault
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
 	}
-	if args.ColourMode != Nil {
+	if args.ColourMode != modeNil {
 		args.Palette.ColourMode = args.ColourMode
 	}
 
@@ -54,16 +54,16 @@ func Print(args Args) {
 		}
 	}()
 	switch args.Palette.ColourMode {
-	case Single:
+	case modeSingle:
 		printSingleColour(args)
 		return
-	case Alternate:
+	case modeAlternate:
 		printAlternatingColours(args)
 		return
-	case VerticalGradient:
+	case modeVerticalGradient:
 		printVerticalGradient(args)
 		return
-	case HorizontalGradient:
+	case modeHorizontalGradient:
 		printHorizontalGradient(args)
 		return
 	}
@@ -72,7 +72,7 @@ func Print(args Args) {
 func Random(args Args) {
 	args.Font = pick(FontMap)
 	args.Palette = pick(ProfileMap)
-	args.ColourMode = Nil
+	args.ColourMode = modeNil
 	Print(args)
 }
 
