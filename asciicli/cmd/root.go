@@ -13,7 +13,7 @@ var mode string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "asciiban",
+	Use:   "asciicli",
 	Short: "Generate ascii banner",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

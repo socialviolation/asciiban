@@ -22,7 +22,7 @@ type Args struct {
 }
 
 var DefaultArgs Args = Args{
-	Message: "cli",
+	Message: "asciicli",
 	Font:    fontpack.ANSIShadow,
 	Palette: White,
 }

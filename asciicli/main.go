@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/socialviolation/asciiban/cli/cmd"
+	"github.com/socialviolation/asciiban/asciicli/cmd"
 )
 
 func main() {
