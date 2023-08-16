@@ -42,7 +42,7 @@ func main() {
 You can install asciiban by running the following command:
 
 ```bash
-go install github.com/socialviolation/asciiban/asciicli-bkp@v0.1.0
+go install github.com/socialviolation/asciiban/asciicli@v0.1.0
 ```
 
 This will install the tool in your `$GOBIN` directory.
@@ -52,7 +52,7 @@ This will install the tool in your `$GOBIN` directory.
 To use asciiban, simply run the following command:
 
 ```bash
-asciicli-bkp "Your text here"
+asciicli "Your text here"
 ```
 
 This will generate an ASCII art banner for the text you entered. More information can be found by running `asciiban --help`
@@ -76,7 +76,7 @@ Flags:
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciicli-bkp -f georgia11 -p matrix "What is real?"
+asciicli -f georgia11 -p matrix "What is real?"
 ```
 
 ## Contributing
