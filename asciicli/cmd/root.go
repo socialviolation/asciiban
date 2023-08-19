@@ -54,9 +54,17 @@ func getArgs(args []string) asciiban.Args {
 	if len(args) > 0 {
 		a.Message = args[0]
 	}
-	a.Font = asciiban.GetFont(font)
+	var err error
+	a.Font, err = asciiban.GetFont(font)
+	if err != nil {
+		panic(err)
+	}
 	a.Palette = asciiban.GetPalette(palette)
-	a.ColourMode = asciiban.GetPaletteMode(mode)
+	if mode == "" {
+		a.ColourMode = a.Palette.ColourMode
+	} else {
+		a.ColourMode = asciiban.GetColourMode(mode)
+	}
 
 	return a
 }

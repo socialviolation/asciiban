@@ -1223,9 +1223,9 @@ var FontMap = map[string]string{
 	"default": FontANSIShadow,
 }
 
-func GetFont(f string) string {
+func GetFont(f string) (*Font, error) {
 	if val, ok := FontMap[strings.ToLower(f)]; ok {
-		return val
+		return ParseFlf(f, val)
 	}
 	fmt.Println("Font not found, using default font")
 	return GetFont("default")

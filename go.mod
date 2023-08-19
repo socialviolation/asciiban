@@ -3,10 +3,10 @@ module github.com/socialviolation/asciiban
 go 1.20
 
 require (
-	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/go-git/go-git/v5 v5.6.1
 	github.com/gookit/color v1.5.3
 	github.com/spf13/cobra v1.7.0
+	golang.org/x/exp v0.0.0-20220909182711-5c715a9e8561
 )
 
 require (

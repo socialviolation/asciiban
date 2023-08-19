@@ -40,7 +40,7 @@ var fontsTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for _, k := range keys {
 			fmt.Println(k)
-			a.Font = asciiban.GetFont(k)
+			a.Font, _ = asciiban.GetFont(k)
 			asciiban.Print(a)
 			fmt.Println()
 		}
@@ -61,13 +61,8 @@ var parseTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for _, k := range keys {
 			fmt.Println(k)
-			a.Font = asciiban.GetFont(k)
-			f, err := asciiban.ParseFlf(k, a.Font)
-			if err != nil {
-				fmt.Println("error parsing font " + k)
-				continue
-			}
-			fmt.Print(f.Render(a.Message))
+			a.Font, _ = asciiban.GetFont(k)
+			a.Font.Render(a)
 
 			fmt.Println()
 		}

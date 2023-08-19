@@ -2,11 +2,13 @@ package asciiban
 
 import (
 	"errors"
+	"fmt"
+	"github.com/gookit/color"
 	"strconv"
 	"strings"
 )
 
-type font struct {
+type Font struct {
 	fontName       string
 	hardBlank      string
 	height         int
@@ -46,7 +48,7 @@ showing the names of all parameters:
 */
 
 // ParseFlf parses a FIGlet font file
-func ParseFlf(fontName string, gz string) (*font, error) {
+func ParseFlf(fontName string, gz string) (*Font, error) {
 	cont, err := readCompressedFont(gz)
 	if err != nil {
 		return nil, err
@@ -65,7 +67,7 @@ func ParseFlf(fontName string, gz string) (*font, error) {
 	header := strings.Split(lines[0], " ")
 	oldHeader := len(header) < 9
 
-	f := &font{
+	f := &Font{
 		fontName:  fontName,
 		hardBlank: header[0][len(header[0])-1:],
 		charMap:   make(map[rune][]string),
@@ -92,7 +94,7 @@ func ParseFlf(fontName string, gz string) (*font, error) {
 	return f, nil
 }
 
-func convertChar(font *font, char rune) ([]string, error) {
+func convertChar(font *Font, char rune) ([]string, error) {
 	if char < minAscii || char > maxAscii {
 		return nil, errors.New("not Ascii")
 	}
@@ -106,12 +108,12 @@ func convertChar(font *font, char rune) ([]string, error) {
 			continue
 		}
 		row := font.fontSlice[idx]
-		revRow := Reverse(row)
+		revRow := reverse(row)
 		delim := revRow[0]
 		if strings.HasSuffix(row, string(delim)+string(delim)) {
-			row = Reverse(strings.Replace(revRow, string(delim), "", 2))
+			row = reverse(strings.Replace(revRow, string(delim), "", 2))
 		} else if strings.HasSuffix(row, string(delim)) {
-			row = Reverse(strings.Replace(revRow, string(delim), "", 1))
+			row = reverse(strings.Replace(revRow, string(delim), "", 1))
 		}
 
 		row = strings.Replace(row, font.hardBlank, " ", -1)
@@ -129,31 +131,89 @@ func makeRange(min, max int) []int {
 	return a
 }
 
-func (f *font) Render(word string) string {
+func (f *Font) Render(a Args) {
 	letterList := make([][]string, 0)
-	for _, char := range word {
+	for _, char := range a.Message {
 		letter := f.charMap[char]
 		letterList = append(letterList, letter)
 	}
 
-	result := ""
+	var preRenderModes = []ColourMode{modeLetter}
+	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient}
 
-	for row := 0; row < f.height; row++ {
-		for letter := 0; letter < len(letterList); letter++ {
-			result += letterList[letter][row]
+	if contains(preRenderModes, a.ColourMode) {
+		fmt.Println("TODO: NOT IMPLEMENTED")
+	} else if contains(postRenderModes, a.ColourMode) {
+		renderedMsg := ""
+		for row := 0; row < f.height; row++ {
+			for letter := 0; letter < len(letterList); letter++ {
+				renderedMsg += letterList[letter][row]
+			}
+			renderedMsg += "\n"
 		}
-		result += "\n"
+		switch a.ColourMode {
+		case modeSingle:
+			f.singleColour(a.Palette, renderedMsg)
+			return
+		case modeAlternate:
+			f.alternatingColours(a.Palette, renderedMsg)
+			return
+		case modeVerticalGradient:
+			f.verticalGradient(a.Palette, renderedMsg)
+			return
+		case modeHorizontalGradient:
+			f.horizontalGradient(a.Palette, renderedMsg)
+			return
+		}
 	}
-
-	return result
 }
 
-func Reverse(s string) string {
-	n := len(s)
-	runes := make([]rune, n)
-	for _, mr := range s {
-		n--
-		runes[n] = mr
+func (f *Font) singleColour(p Palette, msg string) {
+	color.HEX(p.Colours[0]).Println(msg)
+}
+
+func (f *Font) alternatingColours(p Palette, msg string) {
+	lines := strings.Split(msg, "\n")
+	for i, l := range lines {
+		n := i % len(p.Colours)
+		if n >= len(p.Colours) {
+			n = 0
+		}
+		color.HEX(p.Colours[n]).Println(l)
 	}
-	return string(runes[n:])
+}
+
+func (f *Font) verticalGradient(p Palette, msg string) {
+	lines := strings.Split(msg, "\n")
+	palLen := len(p.Colours)
+	for i, l := range lines {
+		ind := translateLERP(len(lines), palLen, i)
+		color.HEX(p.Colours[ind]).Println(l)
+	}
+}
+
+func (f *Font) horizontalGradient(p Palette, msg string) {
+	lines := strings.Split(msg, "\n")
+	longest := getLongestString(lines)
+	chunkSize := (longest / len(p.Colours)) + 1
+	for _, l := range lines {
+		if l == "" {
+			continue
+		}
+		lineChunks := sliceIntoChunks(l, chunkSize)
+		for c := 0; c < len(lineChunks); c++ {
+			color.HEX(p.Colours[c]).Print(lineChunks[c])
+		}
+		fmt.Println()
+	}
+}
+
+func contains(s []ColourMode, str ColourMode) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }

@@ -12,6 +12,7 @@ const (
 	modeAlternate
 	modeVerticalGradient
 	modeHorizontalGradient
+	modeLetter
 )
 
 type Palette struct {
@@ -55,8 +56,8 @@ var (
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteGoogle = Palette{
-		Colours:    []string{"4285F4", "DB4437", "F4B400", "0F9D58"},
-		ColourMode: modeVerticalGradient,
+		Colours:    []string{"176BEF", "FF3E30", "F7B529", "176BEF", "179C52", "FF3E30"},
+		ColourMode: modeLetter,
 	}
 	White = Palette{
 		Colours:    []string{"FFFFFF"},
@@ -131,7 +132,7 @@ func GetPalette(p string) Palette {
 	return GetPalette("default")
 }
 
-func GetPaletteMode(p string) ColourMode {
+func GetColourMode(p string) ColourMode {
 	switch p {
 	case "s":
 		fallthrough
@@ -155,6 +156,10 @@ func GetPaletteMode(p string) ColourMode {
 		fallthrough
 	case "horizontal":
 		return modeHorizontalGradient
+	case "l":
+		fallthrough
+	case "letter":
+		return modeLetter
 	}
 	return modeNil
 }

@@ -6,11 +6,7 @@ package asciiban
 import (
 	"bytes"
 	"compress/gzip"
-	"fmt"
-	"github.com/common-nighthawk/go-figure"
-	"github.com/gookit/color"
 	"io"
-	"log"
 	"math"
 	"math/rand"
 	"strings"
@@ -18,22 +14,20 @@ import (
 
 type Args struct {
 	Message    string
-	Font       string
+	Font       *Font
 	Palette    Palette
 	ColourMode ColourMode
-
-	fontContents string
 }
 
 var DefaultArgs Args = Args{
 	Message: "ascii banner",
-	Font:    FontDefault,
+	Font:    nil,
 	Palette: PaletteDefault,
 }
 
 func Print(args Args) {
-	if args.Font == "" {
-		args.Font = FontDefault
+	if args.Font == nil {
+		args.Font, _ = GetFont("default")
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
@@ -42,82 +36,19 @@ func Print(args Args) {
 		args.Palette.ColourMode = args.ColourMode
 	}
 
-	fc, err := readCompressedFont(args.Font)
-	if err != nil {
-		log.Fatal(err)
-	}
-	args.fontContents = fc
-
-	defer func() {
-		if err := recover(); err != nil {
-			log.Println("panic occurred:", err)
-		}
-	}()
-	switch args.Palette.ColourMode {
-	case modeSingle:
-		printSingleColour(args)
-		return
-	case modeAlternate:
-		printAlternatingColours(args)
-		return
-	case modeVerticalGradient:
-		printVerticalGradient(args)
-		return
-	case modeHorizontalGradient:
-		printHorizontalGradient(args)
-		return
-	}
+	args.Font.Render(args)
 }
 
 func Random(args Args) {
-	args.Font = pick(FontMap)
+	var err error
+	args.Font, err = GetFont(pick(FontMap))
+	if err != nil {
+		panic(err)
+	}
 	args.Palette = pick(ProfileMap)
 	args.ColourMode = modeNil
-	Print(args)
-}
 
-func printSingleColour(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
-	color.HEX(args.Palette.Colours[0]).Println(raw)
-}
-
-func printAlternatingColours(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
-	lines := strings.Split(raw, "\n")
-	for i, l := range lines {
-		n := i % len(args.Palette.Colours)
-		if n >= len(args.Palette.Colours) {
-			n = 0
-		}
-		color.HEX(args.Palette.Colours[n]).Println(l)
-	}
-}
-
-func printVerticalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
-	lines := strings.Split(raw, "\n")
-	palLen := len(args.Palette.Colours)
-	for i, l := range lines {
-		ind := translateLERP(len(lines), palLen, i)
-		color.HEX(args.Palette.Colours[ind]).Println(l)
-	}
-}
-
-func printHorizontalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
-	lines := strings.Split(raw, "\n")
-	longest := getLongestString(lines)
-	chunkSize := (longest / len(args.Palette.Colours)) + 1
-	for _, l := range lines {
-		if l == "" {
-			continue
-		}
-		lineChunks := sliceIntoChunks(l, chunkSize)
-		for c := 0; c < len(lineChunks); c++ {
-			color.HEX(args.Palette.Colours[c]).Print(lineChunks[c])
-		}
-		fmt.Println()
-	}
+	args.Font.Render(args)
 }
 
 func translateLERP(lines int, colours int, lineIndex int) int {
@@ -200,4 +131,14 @@ func readCompressedFont(filePath string) (string, error) {
 		return "", err
 	}
 	return buffer.String(), nil
+}
+
+func reverse(s string) string {
+	n := len(s)
+	runes := make([]rune, n)
+	for _, mr := range s {
+		n--
+		runes[n] = mr
+	}
+	return string(runes[n:])
 }
