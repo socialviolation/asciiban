@@ -29,27 +29,26 @@ import (
 func main() {
     asciiban.Print(asciiban.Args{
         Message: "What is real?",
-        Palette: asciiban.MatrixGreen,
+        Palette: asciiban.PaletteMintGreen,
         Font:    fontpack.Georgi16,
     })
 }
-
 ```
 
 # CLI
 ## Installation
 
-You can install asciiban by running the following command:
+You can install the asciiban cli by running the following command:
 
 ```bash
-go install github.com/socialviolation/asciiban/asciicli@v0.1.0
+go install github.com/socialviolation/asciiban/asciicli@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
 
 ## Usage
 
-To use asciiban, simply run the following command:
+To use asciiban cli, simply run the following command:
 
 ```bash
 asciicli "Your text here"
@@ -60,14 +59,14 @@ This will generate an ASCII art banner for the text you entered. More informatio
 ```text
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  fonts       A brief description of your command
+  fonts       Subcommands show info for available fonts
   help        Help about any command
-  palettes    A brief description of your command
-  random      Generate Random ascii banner
+  palettes    Subcommands show info for available palettes
+  random      Generate ascii banner using random font & colours
 
 Flags:
   -f, --font string      Colour palette to use (default "ansishadow")
-  -h, --help             help for asciiban
+  -h, --help             help for asciicli
   -m, --mode string      Palette Colour Mode (simple | alternating | vertical | horizontal)
   -p, --palette string   Colour palette to use (default "default")
 
@@ -86,3 +85,21 @@ the GitHub repository: https://github.com/socialviolation/asciiban
 
 ## License
 This tool is released under the GPL-3.0 License. See the LICENSE file for details.
+
+```shell
+$ asciicli "Good Yard" -f caligraphy2
+
+               .-'''-.         .-'''-.
+              '   _    \      '   _    \   _______                                              _______
+            /   /` '.   \   /   /` '.   \  \  ___ `'.                                           \  ___ `'.
+  .--./)   .   |     \  '  .   |     \  '   ' |--.\  \      .-.          .-                      ' |--.\  \
+ /.''\\    |   '      |  ' |   '      |  '  | |    \  '      \ \        / /            .-,.--.   | |    \  '
+| |  | |   \    \     / /  \    \     / /   | |     |  '      \ \      / /      __     |  .-. |  | |     |  '
+ \`-' /     `.   ` ..' /    `.   ` ..' /    | |     |  |       \ \    / /    .:--.'.   | |  | |  | |     |  |
+ /("'`         '-...-'`        '-...-'`     | |     ' .'        \ \  / /    / |   \ |  | |  | |  | |     ' .'
+ \ '---.                                    | |___.' /'          \ `  /     `" __ | |  | |  '-   | |___.' /'
+  /'""'.\                                  /_______.'/            \  /       .'.''| |  | |      /_______.'/
+ ||     ||                                 \_______|/             / /       / /   | |_ | |      \_______|/
+ \'. __//                                                     |`-' /        \ \._,\ '/ |_|
+  `'---'                                                       '..'          `--'  `"
+```

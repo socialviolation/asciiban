@@ -77,12 +77,12 @@ func Random(args Args) {
 }
 
 func printSingleColour(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
 	color.HEX(args.Palette.Colours[0]).Println(raw)
 }
 
 func printAlternatingColours(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
 	lines := strings.Split(raw, "\n")
 	for i, l := range lines {
 		n := i % len(args.Palette.Colours)
@@ -94,7 +94,7 @@ func printAlternatingColours(args Args) {
 }
 
 func printVerticalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
 	lines := strings.Split(raw, "\n")
 	palLen := len(args.Palette.Colours)
 	for i, l := range lines {
@@ -104,7 +104,7 @@ func printVerticalGradient(args Args) {
 }
 
 func printHorizontalGradient(args Args) {
-	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), false).String()
+	raw := figure.NewFigureWithFont(args.Message, strings.NewReader(args.fontContents), true).String()
 	lines := strings.Split(raw, "\n")
 	longest := getLongestString(lines)
 	chunkSize := (longest / len(args.Palette.Colours)) + 1

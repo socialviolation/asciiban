@@ -23,14 +23,14 @@ This will generate an ASCII art banner for the text you entered. More informatio
 ```text
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  fonts       A brief description of your command
+  fonts       Subcommands show info for available fonts
   help        Help about any command
-  palettes    A brief description of your command
-  random      Generate Random ascii banner
+  palettes    Subcommands show info for available palettes
+  random      Generate ascii banner using random font & colours
 
 Flags:
   -f, --font string      Colour palette to use (default "ansishadow")
-  -h, --help             help for asciiban
+  -h, --help             help for asciicli
   -m, --mode string      Palette Colour Mode (simple | alternating | vertical | horizontal)
   -p, --palette string   Colour palette to use (default "default")
 ```
