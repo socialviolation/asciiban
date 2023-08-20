@@ -13,6 +13,7 @@ const (
 	modeVerticalGradient
 	modeHorizontalGradient
 	modeLetter
+	modeStarsNStripes
 )
 
 type Palette struct {
@@ -56,7 +57,7 @@ var (
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteGoogle = Palette{
-		Colours:    []string{"176BEF", "FF3E30", "F7B529", "176BEF", "179C52", "FF3E30"},
+		Colours:    []string{"4285F4", "DB4437", "F4B400", "4285F4", "0F9D58", "DB4437"},
 		ColourMode: modeLetter,
 	}
 	White = Palette{
@@ -96,8 +97,8 @@ var (
 		ColourMode: modeHorizontalGradient,
 	}
 	PaletteMurica = Palette{
-		Colours:    []string{"BB133E", "FFFFFF", "004594"},
-		ColourMode: modeAlternate,
+		Colours:    []string{"b22234", "FFFFFF", "3c3b6e"},
+		ColourMode: modeStarsNStripes,
 	}
 )
 

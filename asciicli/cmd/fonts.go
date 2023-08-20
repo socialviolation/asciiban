@@ -47,31 +47,8 @@ var fontsTestCmd = &cobra.Command{
 	},
 }
 
-// listCmd represents the list command
-var parseTestCmd = &cobra.Command{
-	Use:   "parse",
-	Short: "parse font",
-	Run: func(cmd *cobra.Command, args []string) {
-		keys := make([]string, 0, len(asciiban.FontMap))
-		for k := range asciiban.FontMap {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-
-		a := getArgs(args)
-		for _, k := range keys {
-			fmt.Println(k)
-			a.Font, _ = asciiban.GetFont(k)
-			a.Font.Render(a)
-
-			fmt.Println()
-		}
-	},
-}
-
 func init() {
 	rootCmd.AddCommand(fontsCmd)
 	fontsCmd.AddCommand(fontsListCmd)
 	fontsCmd.AddCommand(fontsTestCmd)
-	fontsCmd.AddCommand(parseTestCmd)
 }

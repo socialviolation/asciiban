@@ -10,6 +10,7 @@ import (
 var palette string
 var font string
 var mode string
+var trim bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -47,6 +48,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&palette, "palette", "p", "default", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "", "Palette Colour Mode (simple | alternating | vertical | horizontal)")
+	rootCmd.PersistentFlags().BoolVarP(&trim, "trim", "t", true, "Trim empty lines")
 }
 
 func getArgs(args []string) asciiban.Args {
@@ -60,10 +62,10 @@ func getArgs(args []string) asciiban.Args {
 		panic(err)
 	}
 	a.Palette = asciiban.GetPalette(palette)
-	if mode == "" {
-		a.ColourMode = a.Palette.ColourMode
-	} else {
+	if mode != "" {
 		a.ColourMode = asciiban.GetColourMode(mode)
+	} else {
+		a.ColourMode = a.Palette.ColourMode
 	}
 
 	return a
