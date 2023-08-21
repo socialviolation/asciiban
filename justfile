@@ -13,3 +13,10 @@ build:
 
 generate:
     go generate ./...
+
+output_readme_screens:
+    {{BINARY}} "america" -p patriot -f dosrebel
+    {{BINARY}} "what is real?" -p matrix -f georgia11
+    {{BINARY}} "Google" -p google -f univers
+    {{BINARY}} "Good yard" -f crazy -p retro
+

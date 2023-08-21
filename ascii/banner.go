@@ -6,7 +6,7 @@ import "fmt"
 
 type Args struct {
 	Message    string
-	FontName   string
+	Font       string
 	Palette    Palette
 	ColourMode ColourMode
 	Trim       bool
@@ -14,20 +14,20 @@ type Args struct {
 }
 
 var DefaultArgs = Args{
-	Message:  "ascii banner",
-	FontName: "",
-	Palette:  PaletteDefault,
+	Message: "ascii banner",
+	Font:    FontANSIShadow,
+	Palette: PaletteDefault,
 }
 
 func Print(args Args) {
-	if args.FontName == "" {
-		args.FontName = "default"
+	if args.Font == "" {
+		args.Font = "default"
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
 	}
 
-	flf, err := loadFont(args.FontName)
+	flf, err := loadFont(args.Font)
 	if err != nil {
 		panic(err)
 	}
@@ -35,15 +35,15 @@ func Print(args Args) {
 }
 
 func Random(args Args) {
-	args.FontName = pickKeyFromMap(fontMap)
+	args.Font = pickKeyFromMap(fontMap)
 	args.Palette = pickValueFromMap(ProfileMap)
-	flf, err := loadFont(args.FontName)
+	flf, err := loadFont(args.Font)
 	if err != nil {
 		panic(err)
 	}
 
 	if args.Verbose {
-		fmt.Printf("Font: %s, \nPalette: %s (%s)\n", args.FontName, args.Palette.Name, args.Palette.Key)
+		fmt.Printf("Font: %s, \nPalette: %s (%s)\n", args.Font, args.Palette.Name, args.Palette.Key)
 	}
 	flf.Render(args)
 }

@@ -79,7 +79,7 @@ asciiban -f georgia11 -p matrix "What is real?"
 ```
 
 ## Examples
-![dosrebel-murica.png](examples%2Fdosrebel-murica.png)
+![dosrebel-patriot.png](examples%2Fdosrebel-patriot.png)
 ![georgia11-matrix.png](examples%2Fgeorgia11-matrix.png)
 ![univers-google.png](examples%2Funivers-google.png)
 ![crazy-retro.png](examples%2Fcrazy-retro.png)
