@@ -11,6 +11,7 @@ var palette string
 var font string
 var mode string
 var trim bool
+var verbose bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -49,6 +50,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "", "Palette Colour Mode (simple | alternating | vertical | horizontal)")
 	rootCmd.PersistentFlags().BoolVarP(&trim, "trim", "t", true, "Trim empty lines")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose")
 }
 
 func getArgs(args []string) ascii.Args {
@@ -56,8 +58,9 @@ func getArgs(args []string) ascii.Args {
 	if len(args) > 0 {
 		a.Message = args[0]
 	}
+	a.Verbose = verbose
 	var err error
-	a.Font, err = ascii.GetFont(font)
+	a.FontName = ascii.GetFontName(font)
 	if err != nil {
 		panic(err)
 	}

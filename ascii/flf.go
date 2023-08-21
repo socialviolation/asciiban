@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-type Font struct {
+type font struct {
 	fontName       string
 	hardBlank      string
 	height         int
@@ -53,7 +53,7 @@ showing the names of all parameters:
 */
 
 // ParseFlf parses a FIGlet font file
-func ParseFlf(fontName string, gz string) (*Font, error) {
+func ParseFlf(fontName string, gz string) (*font, error) {
 	cont, err := readCompressedFont(gz)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func ParseFlf(fontName string, gz string) (*Font, error) {
 	header := strings.Split(lines[0], " ")
 	oldHeader := len(header) < 9
 
-	f := &Font{
+	f := &font{
 		fontName:  fontName,
 		hardBlank: header[0][len(header[0])-1:],
 		charMap:   make(map[rune][]string),
@@ -99,7 +99,7 @@ func ParseFlf(fontName string, gz string) (*Font, error) {
 	return f, nil
 }
 
-func convertChar(font *Font, char rune) ([]string, error) {
+func convertChar(font *font, char rune) ([]string, error) {
 	if char < minAscii || char > maxAscii {
 		return nil, errors.New("not Ascii")
 	}
@@ -136,13 +136,13 @@ func makeRange(min, max int) []int {
 	return a
 }
 
-func (f *Font) Render(a Args) {
+func (f *font) Render(a Args) {
 	cMode := a.ColourMode
 	if cMode == modeNil {
 		cMode = a.Palette.ColourMode
 	}
 	var preRenderModes = []ColourMode{modeLetter}
-	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient, modeStarsNStripes}
+	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient, modePatriot}
 	letterList := f.getLetters(a.Message)
 
 	if contains(preRenderModes, cMode) {
@@ -170,14 +170,14 @@ func (f *Font) Render(a Args) {
 		case modeHorizontalGradient:
 			f.horizontalGradient(a.Palette, renderedMsg)
 			return
-		case modeStarsNStripes:
+		case modePatriot:
 			f.usaMode(renderedMsg)
 			return
 		}
 	}
 }
 
-func (f *Font) getLetters(message string) [][]string {
+func (f *font) getLetters(message string) [][]string {
 	letterList := make([][]string, len(message))
 	for i, char := range message {
 		letter := f.charMap[char]
@@ -190,7 +190,7 @@ func (f *Font) getLetters(message string) [][]string {
 	return letterList
 }
 
-func (f *Font) renderLetters(letterList [][]string) string {
+func (f *font) renderLetters(letterList [][]string) string {
 	renderedMsg := ""
 	for row := 0; row < f.height; row++ {
 		for letter := 0; letter < len(letterList); letter++ {
@@ -209,11 +209,11 @@ func (f *Font) renderLetters(letterList [][]string) string {
 	return filteredLines
 }
 
-func (f *Font) singleColour(p Palette, msg string) {
+func (f *font) singleColour(p Palette, msg string) {
 	color.HEX(p.Colours[0]).Println(msg)
 }
 
-func (f *Font) alternatingColours(p Palette, msg string) {
+func (f *font) alternatingColours(p Palette, msg string) {
 	lines := strings.Split(msg, "\n")
 	for i, l := range lines {
 		n := i % len(p.Colours)
@@ -224,7 +224,7 @@ func (f *Font) alternatingColours(p Palette, msg string) {
 	}
 }
 
-func (f *Font) verticalGradient(p Palette, msg string) {
+func (f *font) verticalGradient(p Palette, msg string) {
 	lines := strings.Split(msg, "\n")
 	palLen := len(p.Colours)
 	for i, l := range lines {
@@ -233,7 +233,7 @@ func (f *Font) verticalGradient(p Palette, msg string) {
 	}
 }
 
-func (f *Font) horizontalGradient(p Palette, msg string) {
+func (f *font) horizontalGradient(p Palette, msg string) {
 	lines := strings.Split(msg, "\n")
 	longest := getLongestString(lines)
 	chunkSize := (longest / len(p.Colours)) + 1
@@ -249,7 +249,7 @@ func (f *Font) horizontalGradient(p Palette, msg string) {
 	}
 }
 
-func (f *Font) usaMode(msg string) {
+func (f *font) usaMode(msg string) {
 	lines := strings.Split(msg, "\n")
 	renderStr := ""
 	redLineIdx := -1
@@ -293,7 +293,7 @@ func (f *Font) usaMode(msg string) {
 	fmt.Println(renderStr)
 }
 
-func (f *Font) letterMode(p Palette, letters [][]string) [][]string {
+func (f *font) letterMode(p Palette, letters [][]string) [][]string {
 	for letterIdx, letter := range letters {
 		_, _ = color.Reset()
 		colour := p.Colours[letterIdx%len(p.Colours)]
@@ -343,7 +343,19 @@ func chunkSlice(slice string, numChunks int) []string {
 	return result
 }
 
-func pick[K comparable, V any](m map[K]V) V {
+func pickKeyFromMap[K comparable, V any](m map[K]V) K {
+	k := rand.Intn(len(m))
+	i := 0
+	for j, _ := range m {
+		if i == k {
+			return j
+		}
+		i++
+	}
+	panic("unreachable")
+}
+
+func pickValueFromMap[K comparable, V any](m map[K]V) V {
 	k := rand.Intn(len(m))
 	i := 0
 	for _, x := range m {

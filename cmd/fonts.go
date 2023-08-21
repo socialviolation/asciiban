@@ -19,7 +19,8 @@ var fontsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
-		for f, _ := range ascii.FontMap {
+		fonts := ascii.GetFonts()
+		for _, f := range fonts {
 			fmt.Println(f)
 		}
 	},
@@ -30,17 +31,13 @@ var fontsTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
-		keys := make([]string, 0, len(ascii.FontMap))
-
-		for k := range ascii.FontMap {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
+		fonts := ascii.GetFonts()
+		sort.Strings(fonts)
 
 		a := getArgs(args)
-		for _, k := range keys {
+		for _, k := range fonts {
 			fmt.Println(k)
-			a.Font, _ = ascii.GetFont(k)
+			a.FontName = k
 			ascii.Print(a)
 			fmt.Println()
 		}

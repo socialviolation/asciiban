@@ -1,45 +1,49 @@
 //go:build !exclude
 
-//go:generate go run gen.go
 package ascii
+
+import "fmt"
 
 type Args struct {
 	Message    string
-	Font       *Font
+	FontName   string
 	Palette    Palette
 	ColourMode ColourMode
 	Trim       bool
+	Verbose    bool
 }
 
-var DefaultArgs Args = Args{
-	Message: "ascii banner",
-	Font:    nil,
-	Palette: PaletteDefault,
+var DefaultArgs = Args{
+	Message:  "ascii banner",
+	FontName: "",
+	Palette:  PaletteDefault,
 }
 
 func Print(args Args) {
-	if args.Font == nil && args.Palette.IsEmpty() {
-		args.Font, _ = GetFont("default")
-		args.Palette = White
-	}
-	if args.Font == nil {
-		args.Font, _ = GetFont("default")
+	if args.FontName == "" {
+		args.FontName = "default"
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
 	}
 
-	args.Font.Render(args)
-}
-
-func Random(args Args) {
-	var err error
-	args.Font, err = GetFont(pick(FontMap))
+	flf, err := loadFont(args.FontName)
 	if err != nil {
 		panic(err)
 	}
-	args.Palette = pick(ProfileMap)
-	args.ColourMode = modeNil
+	flf.Render(args)
+}
 
-	args.Font.Render(args)
+func Random(args Args) {
+	args.FontName = pickKeyFromMap(fontMap)
+	args.Palette = pickValueFromMap(ProfileMap)
+	flf, err := loadFont(args.FontName)
+	if err != nil {
+		panic(err)
+	}
+
+	if args.Verbose {
+		fmt.Printf("Font: %s, \nPalette: %s (%s)\n", args.FontName, args.Palette.Name, args.Palette.Key)
+	}
+	flf.Render(args)
 }

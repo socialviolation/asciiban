@@ -26,14 +26,15 @@ func contains(s []string, e string) bool {
 }
 
 const (
-	PackageFont = "fontpack"
-	PackageMain = "asciiban"
-	DefaultFont = "ANSIShadow"
+	PackageFont  = "fontpack"
+	PackageMain  = "ascii"
+	fontpackPath = "ascii/fontpack"
+	DefaultFont  = "ANSIShadow"
 )
 
 func main() {
-	_ = os.RemoveAll(PackageFont)
-	_ = os.Mkdir(PackageFont, fs.ModePerm)
+	_ = os.RemoveAll(fontpackPath)
+	_ = os.Mkdir(fontpackPath, fs.ModePerm)
 
 	dir, err := os.MkdirTemp("", "fontMap")
 	if err != nil {
@@ -91,7 +92,7 @@ func main() {
 		fmt.Println("Compressed font: " + fName + " to " + zf)
 	}
 
-	fontMapFile, err := os.Create("fonts.go")
+	fontMapFile, err := os.Create(PackageMain + "/fonts.go")
 	defer func(f *os.File) {
 		_ = f.Close()
 	}(fontMapFile)
@@ -145,24 +146,44 @@ import (
 
 {{ range $key, $value := .FontMap }}
 //go:embed {{ $value }}
-var Font{{ $key }} string
+var font{{ $key }} string
 {{end}}
 
-var FontDefault = Font{{ .DefaultFont }}
+var fontDefault = font{{ .DefaultFont }}
 
-var FontMap = map[string]string{
-{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": Font{{ $key }},
+var fontMap = map[string]string{
+{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": font{{ $key }},
 {{end }}
-	"default": Font{{ .DefaultFont }},
+	"default": font{{ .DefaultFont }},
 }
 
-func GetFont(f string) string {
-	if val, ok := FontMap[strings.ToLower(f)]; ok {
-		return val
+func GetFonts() []string {
+	var fonts []string
+	for k := range fontMap {
+		fonts = append(fonts, k)
 	}
-	fmt.Println("Font not found, using default font")
-	return GetFont("default")
+	return fonts
 }
+
+func GetFontName(f string) string {
+	if _, ok := fontMap[strings.ToLower(f)]; ok {
+		return f
+	}
+	fmt.Println("font not found, using default font")
+	return GetFontName("default")
+}
+
+func loadFont(f string) (*font, error) {
+	if f == "" {
+		fmt.Print("font " + f + " not found, using default font")
+		f = "default"
+	}
+	if val, ok := fontMap[strings.ToLower(f)]; ok {
+		return ParseFlf(f, val)
+	}
+	return nil, fmt.Errorf("font not found")
+}
+
 `
 
 func compressFontFile(fontName string, srcFile string) (string, error) {
@@ -174,7 +195,7 @@ func compressFontFile(fontName string, srcFile string) (string, error) {
 	defer originalFile.Close()
 
 	// Create a new gzipped file
-	zipFile := PackageFont + "/" + strings.ToLower(fontName) + ".flf.gz"
+	zipFile := fontpackPath + "/" + strings.ToLower(fontName) + ".flf.gz"
 	gzippedFile, err := os.Create(zipFile)
 	if err != nil {
 		return "", err

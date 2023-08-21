@@ -13,12 +13,13 @@ const (
 	modeVerticalGradient
 	modeHorizontalGradient
 	modeLetter
-	modeStarsNStripes
+	modePatriot
 )
 
 type Palette struct {
-	// List of Hex Codes to use in scheme
-	Colours    []string
+	Name       string
+	Key        string
+	Colours    []string // List of Hex Codes to use in scheme
 	ColourMode ColourMode
 }
 
@@ -29,76 +30,112 @@ func (c *Palette) IsEmpty() bool {
 // https://colorhunt.co/palettes/neon
 var (
 	PaletteMintGreen = Palette{
+		Name:       "Mint Green",
+		Key:        "mint",
 		Colours:    []string{"CCFFBD", "7ECA9C", "4b795d"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteRetroIcyPole = Palette{
+		Name:       "Retro Icy Pole",
+		Key:        "retro",
 		Colours:    []string{"F38181", "FCE38A", "EAFFD0", "95E1D3"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteDesert = Palette{
+		Name:       "Dessert",
+		Key:        "desert",
 		Colours:    []string{"FFACAC", "FFBFA9", "FFEBB4", "FBFFB1"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteIceBlue = Palette{
+		Name:       "Ice Blue",
+		Key:        "ice",
 		Colours:    []string{"E3FDFD", "CBF1F5", "A6E3E9", "71C9CE"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteSwampGreen = Palette{
+		Name:       "Swamp Green",
+		Key:        "swamp",
 		Colours:    []string{"DDFFBB", "C7E9B0", "B3C99C"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteBogGreen = Palette{
+		Name:       "BOG™",
+		Key:        "bog",
 		Colours:    []string{"7DCE13", "70b911", "64a40f"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteMatrixGreen = Palette{
+		Name:       "Matrix",
+		Key:        "matrix",
 		Colours:    []string{"00FF41", "00cc34", "009927"},
 		ColourMode: modeVerticalGradient,
 	}
 	PaletteGoogle = Palette{
+		Name:       "Google Theme",
+		Key:        "google",
 		Colours:    []string{"4285F4", "DB4437", "F4B400", "4285F4", "0F9D58", "DB4437"},
 		ColourMode: modeLetter,
 	}
 	White = Palette{
+		Name:       "White",
+		Key:        "white",
 		Colours:    []string{"FFFFFF"},
 		ColourMode: modeSingle,
 	}
 	PaletteRed = Palette{
+		Name:       "Red",
+		Key:        "red",
 		Colours:    []string{"ff0000"},
 		ColourMode: modeSingle,
 	}
 	PaletteGreen = Palette{
+		Name:       "Green",
+		Key:        "green",
 		Colours:    []string{"008000"},
 		ColourMode: modeSingle,
 	}
 	PaletteBlue = Palette{
+		Name:       "Blue",
+		Key:        "blue",
 		Colours:    []string{"0000ff"},
 		ColourMode: modeSingle,
 	}
 	PaletteYellow = Palette{
+		Name:       "Yellow",
+		Key:        "yellow",
 		Colours:    []string{"ffff00"},
 		ColourMode: modeSingle,
 	}
 	PalettePurple = Palette{
+		Name:       "Purple",
+		Key:        "purple",
 		Colours:    []string{"A020F0"},
 		ColourMode: modeSingle,
 	}
 	PaletteRedBlack = Palette{
+		Name:       "Red-Black",
+		Key:        "red-black",
 		Colours:    []string{"ff0000", "36454F"},
 		ColourMode: modeAlternate,
 	}
 	PaletteRedOrange = Palette{
+		Name:       "Red Orange",
+		Key:        "red-orange",
 		Colours:    []string{"ff0000", "FF5733"},
 		ColourMode: modeAlternate,
 	}
 	PalettePizza = Palette{
+		Name:       "Pizza Mode",
+		Key:        "pizza",
 		Colours:    []string{"008c45", "f4f5f0", "cd212a"},
 		ColourMode: modeHorizontalGradient,
 	}
-	PaletteMurica = Palette{
+	PalettePatriot = Palette{
+		Name:       "Patriot Mode",
+		Key:        "patriot",
 		Colours:    []string{"ff0000", "FFFFFF", "003472"},
-		ColourMode: modeStarsNStripes,
+		ColourMode: modePatriot,
 	}
 )
 
@@ -122,7 +159,7 @@ var ProfileMap = map[string]Palette{
 	"red-black":  PaletteRedBlack,
 	"red-orange": PaletteRedOrange,
 	"pizza":      PalettePizza,
-	"murica":     PaletteMurica,
+	"patriot":    PalettePatriot,
 }
 
 func GetPalette(p string) Palette {
@@ -161,6 +198,8 @@ func GetColourMode(p string) ColourMode {
 		fallthrough
 	case "letter":
 		return modeLetter
+	case "patriot":
+		return modePatriot
 	}
 	return modeNil
 }
