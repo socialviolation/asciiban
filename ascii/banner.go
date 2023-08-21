@@ -1,7 +1,7 @@
 //go:build !exclude
 
 //go:generate go run gen.go
-package asciiban
+package ascii
 
 type Args struct {
 	Message    string

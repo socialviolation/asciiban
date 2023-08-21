@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/socialviolation/asciiban"
+	"github.com/socialviolation/asciiban/ascii"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -19,7 +19,7 @@ var fontsListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
-		for f, _ := range asciiban.FontMap {
+		for f, _ := range ascii.FontMap {
 			fmt.Println(f)
 		}
 	},
@@ -30,9 +30,9 @@ var fontsTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available fonts",
 	Run: func(cmd *cobra.Command, args []string) {
-		keys := make([]string, 0, len(asciiban.FontMap))
+		keys := make([]string, 0, len(ascii.FontMap))
 
-		for k := range asciiban.FontMap {
+		for k := range ascii.FontMap {
 			keys = append(keys, k)
 		}
 		sort.Strings(keys)
@@ -40,8 +40,8 @@ var fontsTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for _, k := range keys {
 			fmt.Println(k)
-			a.Font, _ = asciiban.GetFont(k)
-			asciiban.Print(a)
+			a.Font, _ = ascii.GetFont(k)
+			ascii.Print(a)
 			fmt.Println()
 		}
 	},

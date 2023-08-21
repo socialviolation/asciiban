@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/socialviolation/asciiban"
+	"github.com/socialviolation/asciiban/ascii"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -14,12 +14,12 @@ var trim bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "asciicli",
+	Use:   "asciiban",
 	Short: "Generate ascii banner",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		a := getArgs(args)
-		asciiban.Print(a)
+		ascii.Print(a)
 	},
 }
 
@@ -30,7 +30,7 @@ var randomCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		a := getArgs(args)
-		asciiban.Random(a)
+		ascii.Random(a)
 	},
 }
 
@@ -51,19 +51,19 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&trim, "trim", "t", true, "Trim empty lines")
 }
 
-func getArgs(args []string) asciiban.Args {
-	a := asciiban.DefaultArgs
+func getArgs(args []string) ascii.Args {
+	a := ascii.DefaultArgs
 	if len(args) > 0 {
 		a.Message = args[0]
 	}
 	var err error
-	a.Font, err = asciiban.GetFont(font)
+	a.Font, err = ascii.GetFont(font)
 	if err != nil {
 		panic(err)
 	}
-	a.Palette = asciiban.GetPalette(palette)
+	a.Palette = ascii.GetPalette(palette)
 	if mode != "" {
-		a.ColourMode = asciiban.GetColourMode(mode)
+		a.ColourMode = ascii.GetColourMode(mode)
 	}
 
 	return a

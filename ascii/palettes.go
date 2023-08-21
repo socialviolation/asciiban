@@ -1,6 +1,6 @@
 //go:build !exclude
 
-package asciiban
+package ascii
 
 import "fmt"
 

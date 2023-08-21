@@ -2,13 +2,13 @@ set dotenv-load
 set fallback := false
 
 BINDIR := justfile_directory() + '/bin'
-BINARY := "asciicli"
+BINARY := "asciiban"
 
 @default:
 	just --list --unsorted
 
 build:
-	cd asciicli && go build -o {{BINDIR}}/{{BINARY}} main.go
+	go build -o {{BINDIR}}/{{BINARY}} main.go
 	{{BINDIR}}/{{BINARY}} "test message" -p retro
 
 generate:

@@ -23,14 +23,14 @@ It can then be used in your code using the following example:
 package main
 
 import (
-	"github.com/socialviolation/asciiban"
+	"github.com/socialviolation/asciiban/ascii"
 )
 
 func main() {
-    asciiban.Print(asciiban.Args{
+    ascii.Print(ascii.Args{
         Message: "What is real?",
-        Palette: asciiban.PaletteMintGreen,
-        Font:    asciiban.FontGeorgia11,
+        Palette: ascii.PaletteMintGreen,
+        Font:    ascii.FontGeorgia11,
     })
 }
 ```
@@ -41,7 +41,7 @@ func main() {
 You can install the asciiban cli by running the following command:
 
 ```bash
-go install github.com/socialviolation/asciiban/asciicli@main
+go install github.com/socialviolation/asciiban@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
@@ -51,7 +51,7 @@ This will install the tool in your `$GOBIN` directory.
 To use asciiban cli, simply run the following command:
 
 ```bash
-asciicli "Your text here"
+asciiban "Your text here"
 ```
 
 This will generate an ASCII art banner for the text you entered. More information can be found by running `asciiban --help`
@@ -66,7 +66,7 @@ Available Commands:
 
 Flags:
   -f, --font string      Colour palette to use (default "ansishadow")
-  -h, --help             help for asciicli
+  -h, --help             help for asciiban
   -m, --mode string      Palette Colour Mode (simple | alternating | vertical | horizontal)
   -p, --palette string   Colour palette to use (default "default")
 
@@ -75,7 +75,7 @@ Flags:
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciicli -f georgia11 -p matrix "What is real?"
+asciiban -f georgia11 -p matrix "What is real?"
 ```
 
 ## Examples

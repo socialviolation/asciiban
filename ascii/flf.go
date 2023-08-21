@@ -1,4 +1,4 @@
-package asciiban
+package ascii
 
 import (
 	"bytes"
