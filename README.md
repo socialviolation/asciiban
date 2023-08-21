@@ -30,7 +30,7 @@ func main() {
     asciiban.Print(asciiban.Args{
         Message: "What is real?",
         Palette: asciiban.PaletteMintGreen,
-        Font:    fontpack.Georgi16,
+        Font:    asciiban.FontGeorgia11,
     })
 }
 ```
