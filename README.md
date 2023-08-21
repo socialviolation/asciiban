@@ -29,30 +29,29 @@ import (
 func main() {
     asciiban.Print(asciiban.Args{
         Message: "What is real?",
-        Palette: palettes.MatrixGreen,
+        Palette: asciiban.PaletteMintGreen,
         Font:    fontpack.Georgi16,
     })
 }
-
 ```
 
 # CLI
 ## Installation
 
-You can install asciiban by running the following command:
+You can install the asciiban cli by running the following command:
 
 ```bash
-go install -o asciiban github.com/socialviolation/asciiban/cli@main
+go install github.com/socialviolation/asciiban/asciicli@main
 ```
 
 This will install the tool in your `$GOBIN` directory.
 
 ## Usage
 
-To use asciiban, simply run the following command:
+To use asciiban cli, simply run the following command:
 
 ```bash
-asciiban "Your text here"
+asciicli "Your text here"
 ```
 
 This will generate an ASCII art banner for the text you entered. More information can be found by running `asciiban --help`
@@ -60,14 +59,14 @@ This will generate an ASCII art banner for the text you entered. More informatio
 ```text
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
-  fonts       A brief description of your command
+  fonts       Subcommands show info for available fonts
   help        Help about any command
-  palettes    A brief description of your command
-  random      Generate Random ascii banner
+  palettes    Subcommands show info for available palettes
+  random      Generate ascii banner using random font & colours
 
 Flags:
   -f, --font string      Colour palette to use (default "ansishadow")
-  -h, --help             help for asciiban
+  -h, --help             help for asciicli
   -m, --mode string      Palette Colour Mode (simple | alternating | vertical | horizontal)
   -p, --palette string   Colour palette to use (default "default")
 
@@ -76,8 +75,14 @@ Flags:
 * For example, to generate an ASCII art banner using the big font and green color, run the following command:
 
 ```bash
-asciiban -f georgia11 -p matrix "What is real?"
+asciicli -f georgia11 -p matrix "What is real?"
 ```
+
+## Examples
+![dosrebel-murica.png](examples%2Fdosrebel-murica.png)
+![georgia11-matrix.png](examples%2Fgeorgia11-matrix.png)
+![univers-google.png](examples%2Funivers-google.png)
+![crazy-retro.png](examples%2Fcrazy-retro.png)
 
 ## Contributing
 

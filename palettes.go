@@ -1,13 +1,19 @@
+//go:build !exclude
+
 package asciiban
+
+import "fmt"
 
 type ColourMode int64
 
 const (
-	Nil ColourMode = iota
-	Single
-	Alternate
-	VerticalGradient
-	HorizontalGradient
+	modeNil ColourMode = iota
+	modeSingle
+	modeAlternate
+	modeVerticalGradient
+	modeHorizontalGradient
+	modeLetter
+	modeStarsNStripes
 )
 
 type Palette struct {
@@ -17,137 +23,144 @@ type Palette struct {
 }
 
 func (c *Palette) IsEmpty() bool {
-	return c.Colours == nil
+	return c.ColourMode == modeNil
 }
 
 // https://colorhunt.co/palettes/neon
 var (
-	MintGreen = Palette{
+	PaletteMintGreen = Palette{
 		Colours:    []string{"CCFFBD", "7ECA9C", "4b795d"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	RetroIcyPole = Palette{
+	PaletteRetroIcyPole = Palette{
 		Colours:    []string{"F38181", "FCE38A", "EAFFD0", "95E1D3"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	Desert = Palette{
+	PaletteDesert = Palette{
 		Colours:    []string{"FFACAC", "FFBFA9", "FFEBB4", "FBFFB1"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	IceBlue = Palette{
+	PaletteIceBlue = Palette{
 		Colours:    []string{"E3FDFD", "CBF1F5", "A6E3E9", "71C9CE"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	SwampGreen = Palette{
+	PaletteSwampGreen = Palette{
 		Colours:    []string{"DDFFBB", "C7E9B0", "B3C99C"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	BogGreen = Palette{
+	PaletteBogGreen = Palette{
 		Colours:    []string{"7DCE13", "70b911", "64a40f"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	MatrixGreen = Palette{
+	PaletteMatrixGreen = Palette{
 		Colours:    []string{"00FF41", "00cc34", "009927"},
-		ColourMode: VerticalGradient,
+		ColourMode: modeVerticalGradient,
 	}
-	Google = Palette{
-		Colours:    []string{"4285F4", "DB4437", "F4B400", "0F9D58"},
-		ColourMode: VerticalGradient,
+	PaletteGoogle = Palette{
+		Colours:    []string{"4285F4", "DB4437", "F4B400", "4285F4", "0F9D58", "DB4437"},
+		ColourMode: modeLetter,
 	}
 	White = Palette{
 		Colours:    []string{"FFFFFF"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	Red = Palette{
+	PaletteRed = Palette{
 		Colours:    []string{"ff0000"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	Green = Palette{
+	PaletteGreen = Palette{
 		Colours:    []string{"008000"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	Blue = Palette{
+	PaletteBlue = Palette{
 		Colours:    []string{"0000ff"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	Yellow = Palette{
+	PaletteYellow = Palette{
 		Colours:    []string{"ffff00"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	Purple = Palette{
+	PalettePurple = Palette{
 		Colours:    []string{"A020F0"},
-		ColourMode: Single,
+		ColourMode: modeSingle,
 	}
-	RedBlack = Palette{
+	PaletteRedBlack = Palette{
 		Colours:    []string{"ff0000", "36454F"},
-		ColourMode: Alternate,
+		ColourMode: modeAlternate,
 	}
-	RedOrange = Palette{
+	PaletteRedOrange = Palette{
 		Colours:    []string{"ff0000", "FF5733"},
-		ColourMode: Alternate,
+		ColourMode: modeAlternate,
 	}
-	Pizza = Palette{
+	PalettePizza = Palette{
 		Colours:    []string{"008c45", "f4f5f0", "cd212a"},
-		ColourMode: HorizontalGradient,
+		ColourMode: modeHorizontalGradient,
 	}
-	Murica = Palette{
-		Colours:    []string{"BB133E", "FFFFFF", "004594"},
-		ColourMode: Alternate,
+	PaletteMurica = Palette{
+		Colours:    []string{"ff0000", "FFFFFF", "003472"},
+		ColourMode: modeStarsNStripes,
 	}
 )
 
+var PaletteDefault = White
+
 var ProfileMap = map[string]Palette{
-	"mint":       MintGreen,
-	"matrix":     MatrixGreen,
-	"bog":        BogGreen,
-	"swamp":      SwampGreen,
-	"ice":        IceBlue,
-	"desert":     Desert,
-	"retro":      RetroIcyPole,
-	"google":     Google,
-	"default":    White,
-	"red":        Red,
-	"green":      Green,
-	"blue":       Blue,
-	"yellow":     Yellow,
-	"purple":     Purple,
-	"red-black":  RedBlack,
-	"red-orange": RedOrange,
-	"pizza":      Pizza,
-	"murica":     Murica,
+	"mint":       PaletteMintGreen,
+	"matrix":     PaletteMatrixGreen,
+	"bog":        PaletteBogGreen,
+	"swamp":      PaletteSwampGreen,
+	"ice":        PaletteIceBlue,
+	"desert":     PaletteDesert,
+	"retro":      PaletteRetroIcyPole,
+	"google":     PaletteGoogle,
+	"default":    PaletteDefault,
+	"red":        PaletteRed,
+	"green":      PaletteGreen,
+	"blue":       PaletteBlue,
+	"yellow":     PaletteYellow,
+	"purple":     PalettePurple,
+	"red-black":  PaletteRedBlack,
+	"red-orange": PaletteRedOrange,
+	"pizza":      PalettePizza,
+	"murica":     PaletteMurica,
 }
 
-func Get(p string) Palette {
+func GetPalette(p string) Palette {
 	if val, ok := ProfileMap[p]; ok {
 		return val
 	}
-	return White
+	fmt.Println("Palette not found, using default palette")
+	return GetPalette("default")
 }
 
-func GetMode(p string) ColourMode {
+func GetColourMode(p string) ColourMode {
 	switch p {
 	case "s":
 		fallthrough
 	case "single":
-		return Single
+		return modeSingle
 	case "a":
 		fallthrough
 	case "alt":
 		fallthrough
 	case "alternating":
-		return Alternate
+		return modeAlternate
 	case "v":
 		fallthrough
 	case "vert":
 		fallthrough
 	case "vertical":
-		return VerticalGradient
+		return modeVerticalGradient
 	case "h":
 		fallthrough
 	case "horiz":
 		fallthrough
 	case "horizontal":
-		return HorizontalGradient
+		return modeHorizontalGradient
+	case "l":
+		fallthrough
+	case "letter":
+		return modeLetter
 	}
-	return Nil
+	return modeNil
 }
