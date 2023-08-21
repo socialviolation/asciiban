@@ -23,7 +23,7 @@ type Palette struct {
 }
 
 func (c *Palette) IsEmpty() bool {
-	return c.Colours == nil
+	return c.ColourMode == modeNil
 }
 
 // https://colorhunt.co/palettes/neon
@@ -97,7 +97,7 @@ var (
 		ColourMode: modeHorizontalGradient,
 	}
 	PaletteMurica = Palette{
-		Colours:    []string{"b22234", "FFFFFF", "3c3b6e"},
+		Colours:    []string{"ff0000", "FFFFFF", "003472"},
 		ColourMode: modeStarsNStripes,
 	}
 )

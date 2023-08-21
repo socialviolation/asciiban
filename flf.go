@@ -137,12 +137,16 @@ func makeRange(min, max int) []int {
 }
 
 func (f *Font) Render(a Args) {
+	cMode := a.ColourMode
+	if cMode == modeNil {
+		cMode = a.Palette.ColourMode
+	}
 	var preRenderModes = []ColourMode{modeLetter}
 	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient, modeStarsNStripes}
 	letterList := f.getLetters(a.Message)
 
-	if contains(preRenderModes, a.ColourMode) {
-		switch a.ColourMode {
+	if contains(preRenderModes, cMode) {
+		switch cMode {
 		case modeLetter:
 			letterList = f.letterMode(a.Palette, letterList)
 			break
@@ -150,9 +154,10 @@ func (f *Font) Render(a Args) {
 
 		renderedMsg := f.renderLetters(letterList)
 		fmt.Println(renderedMsg)
-	} else if contains(postRenderModes, a.ColourMode) {
+	} else if contains(postRenderModes, cMode) {
 		renderedMsg := f.renderLetters(letterList)
-		switch a.ColourMode {
+
+		switch cMode {
 		case modeSingle:
 			f.singleColour(a.Palette, renderedMsg)
 			return
@@ -166,7 +171,7 @@ func (f *Font) Render(a Args) {
 			f.horizontalGradient(a.Palette, renderedMsg)
 			return
 		case modeStarsNStripes:
-			f.usaMode(a.Palette, renderedMsg)
+			f.usaMode(renderedMsg)
 			return
 		}
 	}
@@ -193,7 +198,15 @@ func (f *Font) renderLetters(letterList [][]string) string {
 		}
 		renderedMsg += "\n"
 	}
-	return renderedMsg
+
+	var filteredLines string
+	for _, l := range strings.Split(renderedMsg, "\n") {
+		if strings.TrimSpace(l) != "" {
+			filteredLines += l + "\n"
+		}
+	}
+
+	return filteredLines
 }
 
 func (f *Font) singleColour(p Palette, msg string) {
@@ -236,21 +249,26 @@ func (f *Font) horizontalGradient(p Palette, msg string) {
 	}
 }
 
-func (f *Font) usaMode(p Palette, msg string) {
+func (f *Font) usaMode(msg string) {
 	lines := strings.Split(msg, "\n")
 	renderStr := ""
 	redLineIdx := -1
 
-	flagStyle := color.New(color.HEX("FFFFFF").Color(), color.HEX("3c3b6e", true).Color())
+	flagStyle := color.S256(15, 17)
+	//flagStyle := color.New(color.HEX("FFFFFF").Color(), color.HEX("0000ff", true).Color())
 	//redLineStyle := color.New(color.FgBlack, color.BgRed)
-	redLineStyle := color.New(color.Red)
+	redLineStyle := color.HEX("ff0000")
 	//whiteLineStyle := color.New(color.FgBlack, color.BgHiWhite)
-	whiteLineStyle := color.New(color.HEX("FFFFFF").Color())
+	whiteLineStyle := color.HEX("FFFFFF")
 
-	for i, l := range lines {
-		if l == "" {
-			continue
+	var filteredLines []string
+	for _, l := range lines {
+		if strings.TrimSpace(l) != "" {
+			filteredLines = append(filteredLines, l)
 		}
+	}
+
+	for i, l := range filteredLines {
 		if redLineIdx == -1 {
 			redLineIdx = i
 		}
@@ -259,12 +277,12 @@ func (f *Font) usaMode(p Palette, msg string) {
 			c = redLineStyle
 		}
 
-		if i <= len(lines)/3 {
-			var splitIdx int = len(l) / 3
-			flagPart := l[:splitIdx]
+		if i <= len(filteredLines)/2 {
+			chunks := cutIntoChunks(l, 3)
+			flagPart := chunks[0]
 			renderStr += flagStyle.Sprint(flagPart)
 
-			rest := l[splitIdx:]
+			rest := chunks[1] + chunks[2]
 			renderStr += c.Sprint(rest)
 		} else {
 			renderStr += c.Sprint(l)
@@ -353,6 +371,24 @@ func sliceIntoChunks(l string, chunkSize int) []string {
 	runes := []rune(l)
 	for i := 0; i < len(runes); i += chunkSize {
 		end := i + chunkSize
+
+		if end > len(runes) {
+			end = len(runes)
+		}
+
+		result = append(result, string(runes[i:end]))
+	}
+
+	return result
+}
+
+func cutIntoChunks(l string, chunks int) []string {
+	var result []string
+	runes := []rune(l)
+
+	cut := int(len(runes) / chunks)
+	for i := 0; i < len(runes); i += cut {
+		end := i + cut
 
 		if end > len(runes) {
 			end = len(runes)

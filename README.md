@@ -78,6 +78,12 @@ Flags:
 asciicli -f georgia11 -p matrix "What is real?"
 ```
 
+## Examples
+![dosrebel-murica.png](examples%2Fdosrebel-murica.png)
+![georgia11-matrix.png](examples%2Fgeorgia11-matrix.png)
+![univers-google.png](examples%2Funivers-google.png)
+![crazy-retro.png](examples%2Fcrazy-retro.png)
+
 ## Contributing
 
 If you find any bugs or have suggestions for improvements, please feel free to open an issue or submit a pull request on
@@ -85,21 +91,3 @@ the GitHub repository: https://github.com/socialviolation/asciiban
 
 ## License
 This tool is released under the GPL-3.0 License. See the LICENSE file for details.
-
-```shell
-$ asciicli "Good Yard" -f caligraphy2
-
-               .-'''-.         .-'''-.
-              '   _    \      '   _    \   _______                                              _______
-            /   /` '.   \   /   /` '.   \  \  ___ `'.                                           \  ___ `'.
-  .--./)   .   |     \  '  .   |     \  '   ' |--.\  \      .-.          .-                      ' |--.\  \
- /.''\\    |   '      |  ' |   '      |  '  | |    \  '      \ \        / /            .-,.--.   | |    \  '
-| |  | |   \    \     / /  \    \     / /   | |     |  '      \ \      / /      __     |  .-. |  | |     |  '
- \`-' /     `.   ` ..' /    `.   ` ..' /    | |     |  |       \ \    / /    .:--.'.   | |  | |  | |     |  |
- /("'`         '-...-'`        '-...-'`     | |     ' .'        \ \  / /    / |   \ |  | |  | |  | |     ' .'
- \ '---.                                    | |___.' /'          \ `  /     `" __ | |  | |  '-   | |___.' /'
-  /'""'.\                                  /_______.'/            \  /       .'.''| |  | |      /_______.'/
- ||     ||                                 \_______|/             / /       / /   | |_ | |      \_______|/
- \'. __//                                                     |`-' /        \ \._,\ '/ |_|
-  `'---'                                                       '..'          `--'  `"
-```

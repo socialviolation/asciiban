@@ -18,20 +18,15 @@ var DefaultArgs Args = Args{
 }
 
 func Print(args Args) {
+	if args.Font == nil && args.Palette.IsEmpty() {
+		args.Font, _ = GetFont("default")
+		args.Palette = White
+	}
 	if args.Font == nil {
-		if args.ColourMode == modeStarsNStripes || args.Palette.ColourMode == modeStarsNStripes {
-			args.Palette = PaletteMurica
-			args.ColourMode = modeStarsNStripes
-			args.Font, _ = GetFont("usaflag")
-		} else {
-			args.Font, _ = GetFont("default")
-		}
+		args.Font, _ = GetFont("default")
 	}
 	if args.Palette.IsEmpty() {
 		args.Palette = White
-	}
-	if args.ColourMode != modeNil {
-		args.Palette.ColourMode = args.ColourMode
 	}
 
 	args.Font.Render(args)

@@ -64,8 +64,6 @@ func getArgs(args []string) asciiban.Args {
 	a.Palette = asciiban.GetPalette(palette)
 	if mode != "" {
 		a.ColourMode = asciiban.GetColourMode(mode)
-	} else {
-		a.ColourMode = a.Palette.ColourMode
 	}
 
 	return a
