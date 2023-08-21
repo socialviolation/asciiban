@@ -144,19 +144,6 @@ import (
 	"strings"
 )
 
-{{ range $key, $value := .FontMap }}
-//go:embed {{ $value }}
-var font{{ $key }} string
-{{end}}
-
-var fontDefault = font{{ .DefaultFont }}
-
-var fontMap = map[string]string{
-{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": font{{ $key }},
-{{end }}
-	"default": font{{ .DefaultFont }},
-}
-
 func GetFonts() []string {
 	var fonts []string
 	for k := range fontMap {
@@ -165,25 +152,40 @@ func GetFonts() []string {
 	return fonts
 }
 
-func GetFontName(f string) string {
-	if _, ok := fontMap[strings.ToLower(f)]; ok {
-		return f
+func MatchFont(name string) string {
+	for k := range fontMap {
+		if strings.Contains(k, name) {
+			return k
+		}
 	}
-	fmt.Println("font not found, using default font")
-	return GetFontName("default")
+	return "default"
 }
 
-func loadFont(f string) (*font, error) {
-	if f == "" {
-		fmt.Print("font " + f + " not found, using default font")
-		f = "default"
+func loadFont(name string) (*font, error) {
+	if name == "" {
+		fmt.Print("font " + name + " not found, using default font")
+		name = "default"
 	}
-	if val, ok := fontMap[strings.ToLower(f)]; ok {
-		return ParseFlf(f, val)
+	if val, ok := fontMap[strings.ToLower(name)]; ok {
+		return ParseFlf(name, val)
 	}
 	return nil, fmt.Errorf("font not found")
 }
 
+
+{{ range $key, $value := .FontMap }}
+//go:embed {{ $value }}
+var font{{ $key }}Zip string
+var Font{{ $key }} = "{{ $key | ToLower}}"
+{{end}}
+
+var FontDefault = Font{{ .DefaultFont }}
+
+var fontMap = map[string]string{
+{{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": font{{ $key }}Zip,
+{{end }}
+	"default": font{{ .DefaultFont }}Zip,
+}
 `
 
 func compressFontFile(fontName string, srcFile string) (string, error) {
@@ -214,5 +216,5 @@ func compressFontFile(fontName string, srcFile string) (string, error) {
 
 	// Flush the gzip writer to ensure all data is written
 	gzipWriter.Flush()
-	return zipFile, nil
+	return "fontpack/" + strings.ToLower(fontName) + ".flf.gz", nil
 }
