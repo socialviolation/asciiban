@@ -37,7 +37,7 @@ var fontsTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for _, k := range fonts {
 			fmt.Println(k)
-			a.FontName = k
+			a.Font = k
 			ascii.Print(a)
 			fmt.Println()
 		}

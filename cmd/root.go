@@ -60,7 +60,7 @@ func getArgs(args []string) ascii.Args {
 	}
 	a.Verbose = verbose
 	var err error
-	a.FontName = ascii.MatchFont(font)
+	a.Font = ascii.MatchFont(font)
 	if err != nil {
 		panic(err)
 	}
