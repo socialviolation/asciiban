@@ -1,0 +1,19 @@
+[tools]
+go = "1.23"
+
+[env]
+BIN="asciiban"
+
+[tasks.build]
+run = "go build -o {{cwd}}/bin/${BIN}"
+
+[tasks.generate]
+run = "go generate ./..."
+
+[tasks.output_readme_screens]
+run = """
+bin/${BIN} "america" -p patriot -f dosrebel
+bin/${BIN} "what is real?" -p matrix -f georgia11
+bin/${BIN} "Google" -p google -f univers
+bin/${BIN} "Good yard" -f crazy -p retro
+"""
