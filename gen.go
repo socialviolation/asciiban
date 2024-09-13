@@ -5,7 +5,6 @@ package main
 import (
 	"compress/gzip"
 	"fmt"
-	"github.com/go-git/go-git/v5"
 	"io"
 	"io/fs"
 	"log"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/go-git/go-git/v5"
 )
 
 func contains(s []string, e string) bool {
@@ -176,10 +177,10 @@ func loadFont(name string) (*font, error) {
 {{ range $key, $value := .FontMap }}
 //go:embed {{ $value }}
 var font{{ $key }}Zip string
-var Font{{ $key }} = "{{ $key | ToLower}}"
+var font{{ $key }} = "{{ $key | ToLower}}"
 {{end}}
 
-var FontDefault = Font{{ .DefaultFont }}
+var FontDefault = font{{ .DefaultFont }}
 
 var fontMap = map[string]string{
 {{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": font{{ $key }}Zip,

@@ -5,12 +5,13 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/gookit/color"
 	"io"
 	"math"
 	"math/rand"
 	"strconv"
 	"strings"
+
+	"github.com/gookit/color"
 )
 
 type font struct {
@@ -137,18 +138,18 @@ func makeRange(min, max int) []int {
 }
 
 func (f *font) Render(a Args) {
-	cMode := a.ColourMode
+	cMode := a.colourMode
 	if cMode == modeNil {
-		cMode = a.Palette.ColourMode
+		cMode = a.palette.ColourMode
 	}
 	var preRenderModes = []ColourMode{modeLetter}
 	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient, modePatriot}
-	letterList := f.getLetters(a.Message)
+	letterList := f.getLetters(a.message)
 
 	if contains(preRenderModes, cMode) {
 		switch cMode {
 		case modeLetter:
-			letterList = f.letterMode(a.Palette, letterList)
+			letterList = f.letterMode(a.palette, letterList)
 			break
 		}
 
@@ -159,16 +160,16 @@ func (f *font) Render(a Args) {
 
 		switch cMode {
 		case modeSingle:
-			f.singleColour(a.Palette, renderedMsg)
+			f.singleColour(a.palette, renderedMsg)
 			return
 		case modeAlternate:
-			f.alternatingColours(a.Palette, renderedMsg)
+			f.alternatingColours(a.palette, renderedMsg)
 			return
 		case modeVerticalGradient:
-			f.verticalGradient(a.Palette, renderedMsg)
+			f.verticalGradient(a.palette, renderedMsg)
 			return
 		case modeHorizontalGradient:
-			f.horizontalGradient(a.Palette, renderedMsg)
+			f.horizontalGradient(a.palette, renderedMsg)
 			return
 		case modePatriot:
 			f.usaMode(renderedMsg)

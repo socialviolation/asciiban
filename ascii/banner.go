@@ -5,45 +5,88 @@ package ascii
 import "fmt"
 
 type Args struct {
-	Message    string
-	Font       string
-	Palette    Palette
-	ColourMode ColourMode
-	Trim       bool
-	Verbose    bool
+	message    string
+	font       string
+	palette    Palette
+	colourMode ColourMode
+	trim       bool
+	verbose    bool
 }
 
-var DefaultArgs = Args{
-	Message: "ascii banner",
-	Font:    FontANSIShadow,
-	Palette: PaletteDefault,
+type BannerOption func(*Args)
+
+func WithMessage(m string) BannerOption {
+	return func(args *Args) {
+		args.message = m
+	}
 }
 
-func Print(args Args) {
-	if args.Font == "" {
-		args.Font = "default"
+func WithFont(f string) BannerOption {
+	return func(args *Args) {
+		args.font = f
 	}
-	if args.Palette.IsEmpty() {
-		args.Palette = White
+}
+
+func WithPalette(p Palette) BannerOption {
+	return func(args *Args) {
+		args.palette = p
+	}
+}
+
+func WithColourMode(m ColourMode) BannerOption {
+	return func(args *Args) {
+		args.colourMode = m
+	}
+}
+
+func WithTrim(trim bool) BannerOption {
+	return func(args *Args) {
+		args.trim = trim
+	}
+}
+
+var (
+	message = "asciiban"
+)
+
+func buildArgs(opts ...BannerOption) *Args {
+	args := &Args{}
+	for _, opt := range opts {
+		opt(args)
+	}
+	if args.font == "" {
+		args.font = "default"
+	}
+	if args.palette.IsEmpty() {
+		args.palette = PaletteWhite
+	}
+	if args.message == "" {
+		args.message = message
 	}
 
-	flf, err := loadFont(args.Font)
+	return args
+}
+
+func Print(opts ...BannerOption) {
+	args := buildArgs(opts...)
+
+	flf, err := loadFont(args.font)
 	if err != nil {
 		panic(err)
 	}
-	flf.Render(args)
+	flf.Render(*args)
 }
 
 func Random(args Args) {
-	args.Font = pickKeyFromMap(fontMap)
-	args.Palette = pickValueFromMap(ProfileMap)
-	flf, err := loadFont(args.Font)
+	args.font = pickKeyFromMap(fontMap)
+	args.palette = pickValueFromMap(PaletteMap)
+	flf, err := loadFont(args.font)
 	if err != nil {
 		panic(err)
 	}
 
-	if args.Verbose {
-		fmt.Printf("Font: %s, \nPalette: %s (%s)\n", args.Font, args.Palette.Name, args.Palette.Key)
+	if args.verbose {
+		fmt.Printf("font: %s, \nPalette: %s (%s)\n", args.font, args.palette.Name, args.palette.Key)
 	}
 	flf.Render(args)
 }

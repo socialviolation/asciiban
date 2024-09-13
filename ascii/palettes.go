@@ -77,8 +77,8 @@ var (
 		Colours:    []string{"4285F4", "DB4437", "F4B400", "4285F4", "0F9D58", "DB4437"},
 		ColourMode: modeLetter,
 	}
-	White = Palette{
-		Name:       "White",
+	PaletteWhite = Palette{
+		Name:       "PaletteWhite",
 		Key:        "white",
 		Colours:    []string{"FFFFFF"},
 		ColourMode: modeSingle,
@@ -139,9 +139,9 @@ var (
 	}
 )
 
-var PaletteDefault = White
+var PaletteDefault = PaletteWhite
 
-var ProfileMap = map[string]Palette{
+var PaletteMap = map[string]Palette{
 	"mint":       PaletteMintGreen,
 	"matrix":     PaletteMatrixGreen,
 	"bog":        PaletteBogGreen,
@@ -163,7 +163,7 @@ var ProfileMap = map[string]Palette{
 }
 
 func GetPalette(p string) Palette {
-	if val, ok := ProfileMap[p]; ok {
+	if val, ok := PaletteMap[p]; ok {
 		return val
 	}
 	fmt.Println("Palette not found, using default palette")

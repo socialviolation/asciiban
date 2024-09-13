@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/socialviolation/asciiban/ascii"
 	"sort"
+
+	"github.com/socialviolation/asciiban/ascii"
 
 	"github.com/spf13/cobra"
 )
@@ -37,7 +38,7 @@ var fontsTestCmd = &cobra.Command{
 		a := getArgs(args)
 		for _, k := range fonts {
 			fmt.Println(k)
-			a.Font = k
+			a.font = k
 			ascii.Print(a)
 			fmt.Println()
 		}

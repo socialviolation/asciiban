@@ -29,6 +29,8 @@ func MatchFont(name string) string {
 	return "default"
 }
 
+var _fontcache map[string]font
+
 func loadFont(name string) (*font, error) {
 	if name == "" {
 		fmt.Print("font " + name + " not found, using default font")
