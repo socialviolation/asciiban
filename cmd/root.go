@@ -21,11 +21,10 @@ var rootCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		a := getOpts(args)
-		ascii.Print(a...)
+		ascii.Draw(a...)
 	},
 }
 
-// rootCmd represents the base command when called without any subcommands
 var randomCmd = &cobra.Command{
 	Use:   "random",
 	Short: "Generate ascii banner using random font & colours",
@@ -59,6 +58,7 @@ func getOpts(args []string) []ascii.BannerOption {
 	if len(args) > 0 {
 		a = append(a, ascii.WithMessage(args[0]))
 	}
+	a = append(a, ascii.WithTrim(trim))
 	a = append(a, ascii.WithVerbose(verbose))
 	a = append(a, ascii.WithFont(font))
 	a = append(a, ascii.WithPaletteName(palette))

@@ -39,7 +39,7 @@ var fontsTestCmd = &cobra.Command{
 		for _, k := range fonts {
 			fmt.Println(k)
 			a = append(a, ascii.WithFont(k))
-			ascii.Print(a...)
+			ascii.Draw(a...)
 			fmt.Println()
 		}
 	},

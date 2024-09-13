@@ -33,7 +33,7 @@ var palettesTestCmd = &cobra.Command{
 		for p, _ := range ascii.PaletteMap {
 			fmt.Println(p)
 			a = append(a, ascii.WithPaletteName(p))
-			ascii.Print(a...)
+			ascii.Draw(a...)
 			fmt.Println()
 		}
 	},

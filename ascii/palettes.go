@@ -89,6 +89,12 @@ var (
 		Colours:    []string{"ff0000"},
 		ColourMode: modeSingle,
 	}
+	PaletteCyan = Palette{
+		Name:       "Cyan",
+		Key:        "cyan",
+		Colours:    []string{"00FFFF"},
+		ColourMode: modeSingle,
+	}
 	PaletteGreen = Palette{
 		Name:       "Green",
 		Key:        "green",
@@ -152,6 +158,7 @@ var PaletteMap = map[string]Palette{
 	"google":     PaletteGoogle,
 	"default":    PaletteDefault,
 	"red":        PaletteRed,
+	"cyan":       PaletteCyan,
 	"green":      PaletteGreen,
 	"blue":       PaletteBlue,
 	"yellow":     PaletteYellow,

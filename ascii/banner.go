@@ -84,7 +84,7 @@ func buildArgs(opts ...BannerOption) *Args {
 	return args
 }
 
-func Print(opts ...BannerOption) {
+func Draw(opts ...BannerOption) {
 	args := buildArgs(opts...)
 
 	flf, err := loadFont(args.font)
@@ -92,6 +92,16 @@ func Print(opts ...BannerOption) {
 		panic(err)
 	}
 	flf.Draw(*args)
+}
+
+func Render(opts ...BannerOption) string {
+	args := buildArgs(opts...)
+
+	flf, err := loadFont(args.font)
+	if err != nil {
+		panic(err)
+	}
+	return flf.Render(*args)
 }
 
 func Random(opts ...BannerOption) {
