@@ -145,6 +145,10 @@ import (
 	"strings"
 )
 
+func init() {
+	fontCache = make(map[string]font)
+}
+
 func GetFonts() []string {
 	var fonts []string
 	for k := range fontMap {
@@ -162,13 +166,23 @@ func MatchFont(name string) string {
 	return "default"
 }
 
+var fontCache map[string]font
+
 func loadFont(name string) (*font, error) {
 	if name == "" {
 		fmt.Print("font " + name + " not found, using default font")
 		name = "default"
 	}
+	if f, hit := fontCache[name]; hit {
+		return &f, nil
+	}
 	if val, ok := fontMap[strings.ToLower(name)]; ok {
-		return ParseFlf(name, val)
+		f, err := ParseFlf(name, val)
+		if err != nil {
+			return nil, err
+		}
+		fontCache[name] = *f
+		return f, nil
 	}
 	return nil, fmt.Errorf("font not found")
 }
@@ -177,10 +191,10 @@ func loadFont(name string) (*font, error) {
 {{ range $key, $value := .FontMap }}
 //go:embed {{ $value }}
 var font{{ $key }}Zip string
-var font{{ $key }} = "{{ $key | ToLower}}"
+var Font{{ $key }} = "{{ $key | ToLower}}"
 {{end}}
 
-var FontDefault = font{{ .DefaultFont }}
+var FontDefault = Font{{ .DefaultFont }}
 
 var fontMap = map[string]string{
 {{ range $key, $value := .FontMap }}	"{{ $key | ToLower}}": font{{ $key }}Zip,

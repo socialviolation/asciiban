@@ -137,7 +137,11 @@ func makeRange(min, max int) []int {
 	return a
 }
 
-func (f *font) Render(a Args) {
+func (f *font) Draw(a Args) {
+	fmt.Print(f.Render(a))
+}
+
+func (f *font) Render(a Args) string {
 	cMode := a.colourMode
 	if cMode == modeNil {
 		cMode = a.palette.ColourMode
@@ -153,29 +157,25 @@ func (f *font) Render(a Args) {
 			break
 		}
 
-		renderedMsg := f.renderLetters(letterList)
-		fmt.Println(renderedMsg)
+		return f.renderLetters(letterList)
 	} else if contains(postRenderModes, cMode) {
 		renderedMsg := f.renderLetters(letterList)
 
 		switch cMode {
 		case modeSingle:
-			f.singleColour(a.palette, renderedMsg)
-			return
+			return f.singleColour(a.palette, renderedMsg)
 		case modeAlternate:
-			f.alternatingColours(a.palette, renderedMsg)
-			return
+			return f.alternatingColours(a.palette, renderedMsg)
 		case modeVerticalGradient:
-			f.verticalGradient(a.palette, renderedMsg)
-			return
+			return f.verticalGradient(a.palette, renderedMsg)
 		case modeHorizontalGradient:
-			f.horizontalGradient(a.palette, renderedMsg)
-			return
+			return f.horizontalGradient(a.palette, renderedMsg)
 		case modePatriot:
-			f.usaMode(renderedMsg)
-			return
+			return f.usaMode(renderedMsg)
 		}
 	}
+
+	return ""
 }
 
 func (f *font) getLetters(message string) [][]string {
@@ -210,31 +210,38 @@ func (f *font) renderLetters(letterList [][]string) string {
 	return filteredLines
 }
 
-func (f *font) singleColour(p Palette, msg string) {
-	color.HEX(p.Colours[0]).Println(msg)
+func (f *font) singleColour(p Palette, msg string) string {
+	return color.HEX(p.Colours[0]).Sprintf("%s\n", msg)
 }
 
-func (f *font) alternatingColours(p Palette, msg string) {
+func (f *font) alternatingColours(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	for i, l := range lines {
 		n := i % len(p.Colours)
 		if n >= len(p.Colours) {
 			n = 0
 		}
-		color.HEX(p.Colours[n]).Println(l)
+		res += color.HEX(p.Colours[n]).Sprintf("%s\n", l)
 	}
+
+	return res
 }
 
-func (f *font) verticalGradient(p Palette, msg string) {
+func (f *font) verticalGradient(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	palLen := len(p.Colours)
 	for i, l := range lines {
 		ind := translateLERP(len(lines), palLen, i)
-		color.HEX(p.Colours[ind]).Println(l)
+		res += color.HEX(p.Colours[ind]).Sprintf("%s\n", l)
 	}
+
+	return res
 }
 
-func (f *font) horizontalGradient(p Palette, msg string) {
+func (f *font) horizontalGradient(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	longest := getLongestString(lines)
 	chunkSize := (longest / len(p.Colours)) + 1
@@ -244,13 +251,15 @@ func (f *font) horizontalGradient(p Palette, msg string) {
 		}
 		lineChunks := sliceIntoChunks(l, chunkSize)
 		for c := 0; c < len(lineChunks); c++ {
-			color.HEX(p.Colours[c]).Print(lineChunks[c])
+			res += color.HEX(p.Colours[c]).Sprint(lineChunks[c])
 		}
-		fmt.Println()
+		res += "\n"
 	}
+
+	return res
 }
 
-func (f *font) usaMode(msg string) {
+func (f *font) usaMode(msg string) string {
 	lines := strings.Split(msg, "\n")
 	renderStr := ""
 	redLineIdx := -1
@@ -291,7 +300,7 @@ func (f *font) usaMode(msg string) {
 		renderStr += "\n"
 	}
 
-	fmt.Println(renderStr)
+	return renderStr
 }
 
 func (f *font) letterMode(p Palette, letters [][]string) [][]string {

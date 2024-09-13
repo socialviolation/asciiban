@@ -20,8 +20,8 @@ var rootCmd = &cobra.Command{
 	Short: "Generate ascii banner",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
-		ascii.Print(a)
+		a := getOpts(args)
+		ascii.Print(a...)
 	},
 }
 
@@ -31,8 +31,8 @@ var randomCmd = &cobra.Command{
 	Short: "Generate ascii banner using random font & colours",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
-		ascii.Random(a)
+		a := getOpts(args)
+		ascii.Random(a...)
 	},
 }
 
@@ -54,20 +54,16 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose")
 }
 
-func getArgs(args []string) ascii.Args {
-	a := ascii.DefaultArgs
+func getOpts(args []string) []ascii.BannerOption {
+	var a []ascii.BannerOption
 	if len(args) > 0 {
-		a.message = args[0]
+		a = append(a, ascii.WithMessage(args[0]))
 	}
-	a.verbose = verbose
-	var err error
-	a.font = ascii.MatchFont(font)
-	if err != nil {
-		panic(err)
-	}
-	a.Palette = ascii.GetPalette(palette)
+	a = append(a, ascii.WithVerbose(verbose))
+	a = append(a, ascii.WithFont(font))
+	a = append(a, ascii.WithPaletteName(palette))
 	if mode != "" {
-		a.colourMode = ascii.GetColourMode(mode)
+		a = append(a, ascii.WithColourModeName(mode))
 	}
 
 	return a

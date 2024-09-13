@@ -5,12 +5,16 @@ go = "1.23"
 BIN="asciiban"
 
 [tasks.build]
-run = "go build -o {{cwd}}/bin/${BIN}"
+alias = "b"
+run = "go build -o ./bin/${BIN}"
 
 [tasks.generate]
+alias = "g"
 run = "go generate ./..."
 
 [tasks.output_readme_screens]
+depends = ["b"]
+alias = "ors"
 run = """
 bin/${BIN} "america" -p patriot -f dosrebel
 bin/${BIN} "what is real?" -p matrix -f georgia11

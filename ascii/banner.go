@@ -23,13 +23,24 @@ func WithMessage(m string) BannerOption {
 
 func WithFont(f string) BannerOption {
 	return func(args *Args) {
-		args.font = f
+		args.font = MatchFont(f)
 	}
 }
 
+func WithPaletteName(p string) BannerOption {
+	return func(args *Args) {
+		args.palette = GetPalette(p)
+	}
+}
 func WithPalette(p Palette) BannerOption {
 	return func(args *Args) {
 		args.palette = p
+	}
+}
+
+func WithColourModeName(c string) BannerOption {
+	return func(args *Args) {
+		args.colourMode = GetColourMode(c)
 	}
 }
 
@@ -42,6 +53,12 @@ func WithColourMode(m ColourMode) BannerOption {
 func WithTrim(trim bool) BannerOption {
 	return func(args *Args) {
 		args.trim = trim
+	}
+}
+
+func WithVerbose(verbose bool) BannerOption {
+	return func(args *Args) {
+		args.verbose = verbose
 	}
 }
 
@@ -74,10 +91,12 @@ func Print(opts ...BannerOption) {
 	if err != nil {
 		panic(err)
 	}
-	flf.Render(*args)
+	flf.Draw(*args)
 }
 
-func Random(args Args) {
+func Random(opts ...BannerOption) {
+	args := buildArgs(opts...)
+
 	args.font = pickKeyFromMap(fontMap)
 	args.palette = pickValueFromMap(PaletteMap)
 	flf, err := loadFont(args.font)
@@ -88,5 +107,6 @@ func Random(args Args) {
 	if args.verbose {
 		fmt.Printf("font: %s, \nPalette: %s (%s)\n", args.font, args.palette.Name, args.palette.Key)
 	}
-	flf.Render(args)
+
+	flf.Render(*args)
 }

@@ -35,11 +35,11 @@ var fontsTestCmd = &cobra.Command{
 		fonts := ascii.GetFonts()
 		sort.Strings(fonts)
 
-		a := getArgs(args)
+		a := getOpts(args)
 		for _, k := range fonts {
 			fmt.Println(k)
-			a.font = k
-			ascii.Print(a)
+			a = append(a, ascii.WithFont(k))
+			ascii.Print(a...)
 			fmt.Println()
 		}
 	},

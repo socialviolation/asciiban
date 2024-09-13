@@ -29,11 +29,11 @@ var palettesTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available colour palettes",
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
+		a := getOpts(args)
 		for p, _ := range ascii.PaletteMap {
 			fmt.Println(p)
-			a.Palette = ascii.GetPalette(p)
-			ascii.Print(a)
+			a = append(a, ascii.WithPaletteName(p))
+			ascii.Print(a...)
 			fmt.Println()
 		}
 	},
