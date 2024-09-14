@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"context"
-	"github.com/socialviolation/asciiban/animate"
-	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
+
+	"github.com/socialviolation/asciiban/animate"
+	"github.com/spf13/cobra"
 )
+
+var sequence string
 
 var animateCmd = &cobra.Command{
 	Use:   "animate",
@@ -18,10 +21,12 @@ var animateCmd = &cobra.Command{
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer cancel()
 
-		animate.Glitch(ctx, a...)
+		seq := animate.GetSequence(sequence)
+		animate.Animate(ctx, seq, a...)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(animateCmd)
+	animateCmd.PersistentFlags().StringVarP(&sequence, "sequence", "s", "default", "Animation sequence")
 }

@@ -158,10 +158,10 @@ func (f *font) Render(a Args) string {
 		}
 
 		r := f.renderLetters(letterList)
-		return strings.Trim(r, "\n ")
+		return strings.Trim(r, "\n")
 	} else if contains(postRenderModes, cMode) {
 		renderedMsg := f.renderLetters(letterList)
-		renderedMsg = strings.Trim(renderedMsg, "\n ")
+		renderedMsg = strings.Trim(renderedMsg, "\n")
 
 		switch cMode {
 		case modeSingle:

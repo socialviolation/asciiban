@@ -3,10 +3,11 @@ package animate
 import (
 	"context"
 	"fmt"
-	"github.com/gosuri/uilive"
-	"github.com/socialviolation/asciiban/ascii"
 	"strings"
 	"time"
+
+	"github.com/gosuri/uilive"
+	"github.com/socialviolation/asciiban/ascii"
 )
 
 type Sequence struct {
@@ -22,8 +23,24 @@ type Frame struct {
 	Opts     []ascii.BannerOption
 }
 
+var blink = Sequence{
+	Frames: []Frame{
+		{
+			Duration: 500 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteBlack),
+			},
+		}, {
+			Duration: 500 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteWhite),
+			},
+		},
+	},
+}
+
 var anaglygh = Sequence{
-	XPadding: 3,
+	XPadding: 2,
 	YPadding: 0,
 	Frames: []Frame{
 		{
@@ -44,97 +61,134 @@ var anaglygh = Sequence{
 }
 
 var glitch = Sequence{
-	XPadding: 3,
-	YPadding: 3,
+	XPadding: 2,
+	YPadding: 2,
 	Frames: []Frame{
 		{
-			Duration: 1 * time.Second,
+			Duration: 3 * time.Second,
 			Opts:     []ascii.BannerOption{},
 		},
 		{
 			XOffset:  1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
 				ascii.WithPalette(ascii.PaletteLime),
+				ascii.WithFont(ascii.FontTheEdge),
 			},
 		},
 		{
 			XOffset:  1,
 			YOffset:  1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PaletteGreen),
+				ascii.WithPalette(ascii.PaletteMatrixGreen),
+				ascii.WithFont(ascii.FontTheEdge),
 			},
 		},
 		{
 			XOffset:  -1,
-			YOffset:  -1,
-			Duration: 80 * time.Millisecond,
+			YOffset:  0,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
 				ascii.WithPalette(ascii.PaletteRed),
+				ascii.WithFont(ascii.FontElite),
+			},
+		},
+		{
+			XOffset:  2,
+			YOffset:  -1,
+			Duration: 100 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteMintGreen),
+				ascii.WithFont(ascii.FontElite),
 			},
 		},
 		{
 			XOffset:  0,
 			YOffset:  -1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PalettePurple),
+				ascii.WithPalette(ascii.PaletteIceBlue),
+				ascii.WithFont(ascii.FontElite),
+			},
+		},
+		{
+			XOffset:  2,
+			YOffset:  -1,
+			Duration: 100 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteGoogle),
+				ascii.WithFont(ascii.FontBloody),
 			},
 		},
 		{
 			XOffset:  0,
 			YOffset:  -1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PaletteBlue),
+				ascii.WithPalette(ascii.PaletteRetroIcyPole),
+				ascii.WithFont(ascii.FontBloody),
 			},
 		},
 		{
-			XOffset:  0,
+			XOffset:  -2,
 			YOffset:  -1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PaletteGreen),
+				ascii.WithPalette(ascii.PaletteRedBlack),
+				ascii.WithFont(ascii.FontDOSRebel),
 			},
 		},
 		{
-			XOffset:  0,
+			XOffset:  -3,
 			YOffset:  -1,
-			Duration: 80 * time.Millisecond,
+			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PaletteCyan),
+				ascii.WithPalette(ascii.PalettePatriot),
+				ascii.WithFont(ascii.FontDOSRebel),
 			},
 		},
 	},
 }
 
-func Anaglyph(ctx context.Context, opts ...ascii.BannerOption) {
-	animate(ctx, anaglygh, opts...)
+var styleMap = map[string]Sequence{
+	"anaglyph": anaglygh,
+	"blink":    blink,
+	"default":  blink,
+	"glitch":   glitch,
 }
 
-func Glitch(ctx context.Context, opts ...ascii.BannerOption) {
-	animate(ctx, glitch, opts...)
+func GetSequence(s string) Sequence {
+	if val, ok := styleMap[s]; ok {
+		return val
+	}
+	fmt.Println("Sequence not found, using default (glitch)")
+	return GetSequence("default")
 }
 
-func animate(ctx context.Context, seq Sequence, opts ...ascii.BannerOption) {
-	frame := 0
+func Animate(ctx context.Context, seq Sequence, opts ...ascii.BannerOption) {
+	frameIdx := 0
 	writer := uilive.New()
 	writer.Start()
 
+	draw := func(f Frame) {
+		writer.Flush()
+		frameOpts := append(opts, f.Opts...)
+		banner := ascii.Render(frameOpts...)
+		banner = pad(seq.XPadding+f.XOffset, seq.YPadding+f.YOffset, banner)
+		//fmt.Fprintln(writer, "frameIdx: "+strconv.Itoa(frameIdx))
+		fmt.Fprintf(writer, banner)
+	}
+
+	draw(seq.Frames[frameIdx])
 	for {
 		select {
 		case <-ctx.Done():
 			writer.Stop()
 			return
-		default:
-			writer.Flush()
-			frame = (frame + 1) % len(anaglygh.Frames)
-			frameOpts := append(opts, anaglygh.Frames[frame].Opts...)
-			rsr := ascii.Render(frameOpts...)
-			rsr = pad(anaglygh.XPadding+anaglygh.Frames[frame].XOffset, anaglygh.YPadding, rsr)
-			fmt.Fprintf(writer, "\n"+rsr)
-			time.Sleep(anaglygh.Frames[frame].Duration)
+		case <-time.After(seq.Frames[frameIdx].Duration):
+			frameIdx = (frameIdx + 1) % len(seq.Frames)
+			draw(seq.Frames[frameIdx])
 		}
 	}
 }
