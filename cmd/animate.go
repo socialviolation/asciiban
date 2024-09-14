@@ -18,7 +18,7 @@ var animateCmd = &cobra.Command{
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer cancel()
 
-		animate.Anaglyph(ctx, a...)
+		animate.Glitch(ctx, a...)
 	},
 }
 

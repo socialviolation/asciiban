@@ -43,9 +43,82 @@ var anaglygh = Sequence{
 	},
 }
 
-func Anaglyph(ctx context.Context, opts ...ascii.BannerOption) {
-	frame := 0
+var glitch = Sequence{
+	XPadding: 3,
+	YPadding: 3,
+	Frames: []Frame{
+		{
+			Duration: 1 * time.Second,
+			Opts:     []ascii.BannerOption{},
+		},
+		{
+			XOffset:  1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteLime),
+			},
+		},
+		{
+			XOffset:  1,
+			YOffset:  1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteGreen),
+			},
+		},
+		{
+			XOffset:  -1,
+			YOffset:  -1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteRed),
+			},
+		},
+		{
+			XOffset:  0,
+			YOffset:  -1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PalettePurple),
+			},
+		},
+		{
+			XOffset:  0,
+			YOffset:  -1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteBlue),
+			},
+		},
+		{
+			XOffset:  0,
+			YOffset:  -1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteGreen),
+			},
+		},
+		{
+			XOffset:  0,
+			YOffset:  -1,
+			Duration: 80 * time.Millisecond,
+			Opts: []ascii.BannerOption{
+				ascii.WithPalette(ascii.PaletteCyan),
+			},
+		},
+	},
+}
 
+func Anaglyph(ctx context.Context, opts ...ascii.BannerOption) {
+	animate(ctx, anaglygh, opts...)
+}
+
+func Glitch(ctx context.Context, opts ...ascii.BannerOption) {
+	animate(ctx, glitch, opts...)
+}
+
+func animate(ctx context.Context, seq Sequence, opts ...ascii.BannerOption) {
+	frame := 0
 	writer := uilive.New()
 	writer.Start()
 
@@ -64,10 +137,6 @@ func Anaglyph(ctx context.Context, opts ...ascii.BannerOption) {
 			time.Sleep(anaglygh.Frames[frame].Duration)
 		}
 	}
-}
-
-func Glitch() {
-
 }
 
 func pad(x int, y int, rdr string) string {
