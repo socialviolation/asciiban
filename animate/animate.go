@@ -3,6 +3,8 @@ package animate
 import (
 	"context"
 	"fmt"
+	"io"
+	"math"
 	"strings"
 	"time"
 
@@ -62,7 +64,7 @@ var anaglygh = Sequence{
 
 var glitch = Sequence{
 	XPadding: 2,
-	YPadding: 2,
+	YPadding: 3,
 	Frames: []Frame{
 		{
 			Duration: 3 * time.Second,
@@ -114,16 +116,16 @@ var glitch = Sequence{
 		},
 		{
 			XOffset:  2,
-			YOffset:  -1,
+			YOffset:  0,
 			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
-				ascii.WithPalette(ascii.PaletteGoogle),
+				ascii.WithPalette(ascii.PaletteRed),
 				ascii.WithFont(ascii.FontBloody),
 			},
 		},
 		{
 			XOffset:  0,
-			YOffset:  -1,
+			YOffset:  1,
 			Duration: 100 * time.Millisecond,
 			Opts: []ascii.BannerOption{
 				ascii.WithPalette(ascii.PaletteRetroIcyPole),
@@ -152,6 +154,7 @@ var glitch = Sequence{
 }
 
 var styleMap = map[string]Sequence{
+	"3d":       anaglygh,
 	"anaglyph": anaglygh,
 	"blink":    blink,
 	"default":  blink,
@@ -167,42 +170,78 @@ func GetSequence(s string) Sequence {
 }
 
 func Animate(ctx context.Context, seq Sequence, opts ...ascii.BannerOption) {
-	frameIdx := 0
-	writer := uilive.New()
-	writer.Start()
-
-	draw := func(f Frame) {
-		writer.Flush()
+	maxLines := 0
+	for _, f := range seq.Frames {
 		frameOpts := append(opts, f.Opts...)
 		banner := ascii.Render(frameOpts...)
-		banner = pad(seq.XPadding+f.XOffset, seq.YPadding+f.YOffset, banner)
-		//fmt.Fprintln(writer, "frameIdx: "+strconv.Itoa(frameIdx))
-		fmt.Fprintf(writer, banner)
-	}
-
-	draw(seq.Frames[frameIdx])
-	for {
-		select {
-		case <-ctx.Done():
-			writer.Stop()
-			return
-		case <-time.After(seq.Frames[frameIdx].Duration):
-			frameIdx = (frameIdx + 1) % len(seq.Frames)
-			draw(seq.Frames[frameIdx])
+		lh := strings.Count(banner, "\n") + (seq.YPadding * 2) + f.YOffset
+		if lh > maxLines {
+			maxLines = lh
 		}
 	}
-}
 
-func pad(x int, y int, rdr string) string {
-	if x > 0 {
-		xpad := strings.Repeat(" ", x)
-		rdr = xpad + rdr
-		rdr = strings.ReplaceAll(rdr, "\n", "\n"+xpad)
+	draw := func(w io.Writer, f Frame) {
+		frameOpts := append(opts, f.Opts...)
+		banner := ascii.Render(frameOpts...)
+		banner = pad(seq.XPadding, seq.YPadding, f.XOffset, f.YOffset, banner)
+		lh := strings.Count(banner, "\n")
+		buffer := int(math.Max(float64(maxLines-lh), 0))
+		if lh > 0 {
+			banner += strings.Repeat("\n", buffer)
+		}
+		_, err := fmt.Fprintf(w, banner)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
-	if y > 0 {
-		ypad := strings.Repeat("\n", y)
-		rdr = ypad + rdr + ypad
+	writer := uilive.New()
+	writer.Start()
+	defer func() {
+		err := writer.Flush()
+		if err != nil {
+			fmt.Println(err)
+		}
+		writer.Stop()
+	}()
+
+	frameIdx := 0
+	ticker := time.NewTicker(seq.Frames[frameIdx].Duration)
+
+	quit := make(chan bool)
+	draw(writer, seq.Frames[frameIdx])
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				ticker.Stop()
+				quit <- true
+				fmt.Println("context cancelled")
+				return
+			case <-ticker.C:
+				frameIdx = (frameIdx + 1) % len(seq.Frames)
+				draw(writer, seq.Frames[frameIdx])
+				writer.Flush()
+				ticker.Stop()
+				ticker = time.NewTicker(seq.Frames[frameIdx].Duration)
+			}
+		}
+	}()
+	<-quit
+}
+
+func pad(xPad int, yPad int, xOff int, yOff int, rdr string) string {
+	if xPad+xOff > 0 {
+		xStr := strings.Repeat(" ", xPad+xOff)
+		rdr = xStr + rdr
+		rdr = strings.ReplaceAll(rdr, "\n", "\n"+xStr)
+	}
+
+	if yPad+yOff >= 0 && yPad-yOff >= 0 {
+		yPre := strings.Repeat("\n", yPad+yOff)
+		ySuf := strings.Repeat("\n", yPad-yOff)
+		rdr = yPre + rdr + ySuf
 	}
 
 	return rdr
