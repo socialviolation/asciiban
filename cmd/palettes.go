@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/socialviolation/asciiban/ascii"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +18,7 @@ var palettesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all available colour palettes",
 	Run: func(cmd *cobra.Command, args []string) {
-		for p, _ := range ascii.ProfileMap {
+		for p, _ := range ascii.PaletteMap {
 			fmt.Println(p)
 		}
 	},
@@ -28,11 +29,11 @@ var palettesTestCmd = &cobra.Command{
 	Use:   "test",
 	Short: "Test all available colour palettes",
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
-		for p, _ := range ascii.ProfileMap {
+		a := getOpts(args)
+		for p, _ := range ascii.PaletteMap {
 			fmt.Println(p)
-			a.Palette = ascii.GetPalette(p)
-			ascii.Print(a)
+			a = append(a, ascii.WithPaletteName(p))
+			ascii.Draw(a...)
 			fmt.Println()
 		}
 	},

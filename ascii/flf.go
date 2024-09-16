@@ -5,12 +5,13 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/gookit/color"
 	"io"
 	"math"
 	"math/rand"
 	"strconv"
 	"strings"
+
+	"github.com/gookit/color"
 )
 
 type font struct {
@@ -136,45 +137,47 @@ func makeRange(min, max int) []int {
 	return a
 }
 
-func (f *font) Render(a Args) {
-	cMode := a.ColourMode
+func (f *font) Draw(a Args) {
+	fmt.Print(f.Render(a))
+}
+
+func (f *font) Render(a Args) string {
+	cMode := a.colourMode
 	if cMode == modeNil {
-		cMode = a.Palette.ColourMode
+		cMode = a.palette.ColourMode
 	}
 	var preRenderModes = []ColourMode{modeLetter}
 	var postRenderModes = []ColourMode{modeSingle, modeAlternate, modeVerticalGradient, modeHorizontalGradient, modePatriot}
-	letterList := f.getLetters(a.Message)
+	letterList := f.getLetters(a.message)
 
 	if contains(preRenderModes, cMode) {
 		switch cMode {
 		case modeLetter:
-			letterList = f.letterMode(a.Palette, letterList)
+			letterList = f.letterMode(a.palette, letterList)
 			break
 		}
 
-		renderedMsg := f.renderLetters(letterList)
-		fmt.Println(renderedMsg)
+		r := f.renderLetters(letterList)
+		return strings.Trim(r, "\n")
 	} else if contains(postRenderModes, cMode) {
 		renderedMsg := f.renderLetters(letterList)
+		renderedMsg = strings.Trim(renderedMsg, "\n")
 
 		switch cMode {
 		case modeSingle:
-			f.singleColour(a.Palette, renderedMsg)
-			return
+			return f.singleColour(a.palette, renderedMsg)
 		case modeAlternate:
-			f.alternatingColours(a.Palette, renderedMsg)
-			return
+			return f.alternatingColours(a.palette, renderedMsg)
 		case modeVerticalGradient:
-			f.verticalGradient(a.Palette, renderedMsg)
-			return
+			return f.verticalGradient(a.palette, renderedMsg)
 		case modeHorizontalGradient:
-			f.horizontalGradient(a.Palette, renderedMsg)
-			return
+			return f.horizontalGradient(a.palette, renderedMsg)
 		case modePatriot:
-			f.usaMode(renderedMsg)
-			return
+			return f.usaMode(renderedMsg)
 		}
 	}
+
+	return ""
 }
 
 func (f *font) getLetters(message string) [][]string {
@@ -209,31 +212,38 @@ func (f *font) renderLetters(letterList [][]string) string {
 	return filteredLines
 }
 
-func (f *font) singleColour(p Palette, msg string) {
-	color.HEX(p.Colours[0]).Println(msg)
+func (f *font) singleColour(p Palette, msg string) string {
+	return color.HEX(p.Colours[0]).Sprintf("%s\n", msg)
 }
 
-func (f *font) alternatingColours(p Palette, msg string) {
+func (f *font) alternatingColours(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	for i, l := range lines {
 		n := i % len(p.Colours)
 		if n >= len(p.Colours) {
 			n = 0
 		}
-		color.HEX(p.Colours[n]).Println(l)
+		res += color.HEX(p.Colours[n]).Sprintf("%s\n", l)
 	}
+
+	return res
 }
 
-func (f *font) verticalGradient(p Palette, msg string) {
+func (f *font) verticalGradient(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	palLen := len(p.Colours)
 	for i, l := range lines {
 		ind := translateLERP(len(lines), palLen, i)
-		color.HEX(p.Colours[ind]).Println(l)
+		res += color.HEX(p.Colours[ind]).Sprintf("%s\n", l)
 	}
+
+	return res
 }
 
-func (f *font) horizontalGradient(p Palette, msg string) {
+func (f *font) horizontalGradient(p Palette, msg string) string {
+	res := ""
 	lines := strings.Split(msg, "\n")
 	longest := getLongestString(lines)
 	chunkSize := (longest / len(p.Colours)) + 1
@@ -243,13 +253,15 @@ func (f *font) horizontalGradient(p Palette, msg string) {
 		}
 		lineChunks := sliceIntoChunks(l, chunkSize)
 		for c := 0; c < len(lineChunks); c++ {
-			color.HEX(p.Colours[c]).Print(lineChunks[c])
+			res += color.HEX(p.Colours[c]).Sprint(lineChunks[c])
 		}
-		fmt.Println()
+		res += "\n"
 	}
+
+	return res
 }
 
-func (f *font) usaMode(msg string) {
+func (f *font) usaMode(msg string) string {
 	lines := strings.Split(msg, "\n")
 	renderStr := ""
 	redLineIdx := -1
@@ -290,7 +302,7 @@ func (f *font) usaMode(msg string) {
 		renderStr += "\n"
 	}
 
-	fmt.Println(renderStr)
+	return renderStr
 }
 
 func (f *font) letterMode(p Palette, letters [][]string) [][]string {

@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/socialviolation/asciiban/ascii"
 	"os"
+
+	"github.com/socialviolation/asciiban/ascii"
 
 	"github.com/spf13/cobra"
 )
@@ -19,19 +20,18 @@ var rootCmd = &cobra.Command{
 	Short: "Generate ascii banner",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
-		ascii.Print(a)
+		a := getOpts(args)
+		ascii.Draw(a...)
 	},
 }
 
-// rootCmd represents the base command when called without any subcommands
 var randomCmd = &cobra.Command{
 	Use:   "random",
 	Short: "Generate ascii banner using random font & colours",
 	Args:  cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		a := getArgs(args)
-		ascii.Random(a)
+		a := getOpts(args)
+		ascii.Random(a...)
 	},
 }
 
@@ -49,24 +49,21 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&palette, "palette", "p", "default", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&font, "font", "f", "ansishadow", "Colour palette to use")
 	rootCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "", "Palette Colour Mode (simple | alternating | vertical | horizontal)")
-	rootCmd.PersistentFlags().BoolVarP(&trim, "trim", "t", true, "Trim empty lines")
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose")
+	rootCmd.PersistentFlags().BoolVarP(&trim, "trim", "t", true, "trim empty lines")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose")
 }
 
-func getArgs(args []string) ascii.Args {
-	a := ascii.DefaultArgs
+func getOpts(args []string) []ascii.BannerOption {
+	var a []ascii.BannerOption
 	if len(args) > 0 {
-		a.Message = args[0]
+		a = append(a, ascii.WithMessage(args[0]))
 	}
-	a.Verbose = verbose
-	var err error
-	a.Font = ascii.MatchFont(font)
-	if err != nil {
-		panic(err)
-	}
-	a.Palette = ascii.GetPalette(palette)
+	a = append(a, ascii.WithTrim(trim))
+	a = append(a, ascii.WithVerbose(verbose))
+	a = append(a, ascii.WithFont(font))
+	a = append(a, ascii.WithPaletteName(palette))
 	if mode != "" {
-		a.ColourMode = ascii.GetColourMode(mode)
+		a = append(a, ascii.WithColourModeName(mode))
 	}
 
 	return a
