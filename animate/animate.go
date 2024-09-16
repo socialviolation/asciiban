@@ -198,37 +198,31 @@ func Animate(ctx context.Context, seq Sequence, opts ...ascii.BannerOption) {
 
 	writer := uilive.New()
 	writer.Start()
-	defer func() {
-		err := writer.Flush()
-		if err != nil {
-			fmt.Println(err)
-		}
-		writer.Stop()
-	}()
+	defer writer.Stop()
 
 	frameIdx := 0
 	ticker := time.NewTicker(seq.Frames[frameIdx].Duration)
+	defer ticker.Stop()
 
-	quit := make(chan bool)
 	draw(writer, seq.Frames[frameIdx])
 	go func() {
 		for {
 			select {
 			case <-ctx.Done():
-				ticker.Stop()
-				quit <- true
-				fmt.Println("context cancelled")
 				return
 			case <-ticker.C:
 				frameIdx = (frameIdx + 1) % len(seq.Frames)
+				ticker.Reset(seq.Frames[frameIdx].Duration)
 				draw(writer, seq.Frames[frameIdx])
-				writer.Flush()
-				ticker.Stop()
-				ticker = time.NewTicker(seq.Frames[frameIdx].Duration)
+				err := writer.Flush()
+				if err != nil {
+					fmt.Println("err during writer flush: ", err)
+				}
 			}
 		}
 	}()
-	<-quit
+
+	<-ctx.Done()
 }
 
 func pad(xPad int, yPad int, xOff int, yOff int, rdr string) string {

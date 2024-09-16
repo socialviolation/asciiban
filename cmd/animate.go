@@ -23,12 +23,18 @@ var animateCmd = &cobra.Command{
 		a := getOpts(args)
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 		defer cancel()
+
 		if duration > 0 {
-			ctx, cancel = context.WithTimeout(ctx, time.Duration(duration)*time.Second)
-			defer cancel()
+			var timeoutCancel context.CancelFunc
+			ctx, timeoutCancel = context.WithTimeout(ctx, time.Duration(duration)*time.Second)
+			defer timeoutCancel()
 		}
+
 		animate.Animate(ctx, animate.GetSequence(sequence), a...)
-		cancel()
+		if ctx.Err() != nil {
+			syscall.Kill(syscall.Getpid(), syscall.SIGKILL) // Send SIGKILL to the current process
+		}
+		os.Exit(0)
 	},
 }
 
